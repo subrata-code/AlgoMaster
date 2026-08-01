@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { authService } from '@/services'
+import { useAuth } from '@/context/AuthContext'
 import { forgotPasswordSchema, type ForgotPasswordFormValues } from '@/lib/validations'
 import { ROUTES } from '@/constants'
+import { toast } from '@/hooks/use-toast'
 
 export default function ForgotPasswordPage() {
   const [message, setMessage] = useState<string | null>(null)
+  const { forgotPassword } = useAuth()
   const {
     register,
     handleSubmit,
@@ -22,15 +24,19 @@ export default function ForgotPasswordPage() {
   })
 
   const onSubmit = handleSubmit(async (values) => {
-    const res = await authService.forgotPassword(values.email)
-    setMessage(res.message)
+    try {
+      const res = await forgotPassword(values.email)
+      setMessage(res.message)
+    } catch (error) {
+      toast({ title: 'Request failed', description: error instanceof Error ? error.message : 'Unable to request reset link.' })
+    }
   })
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Reset password</CardTitle>
-        <CardDescription>Enter your email and we&apos;ll send a reset link (mock).</CardDescription>
+        <CardDescription>Enter your email and we&apos;ll send a reset link for your account.</CardDescription>
       </CardHeader>
       {message ? (
         <CardContent className="space-y-4">

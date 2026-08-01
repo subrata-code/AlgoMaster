@@ -1,7 +1,8 @@
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { Menu, Moon, Sun, X } from 'lucide-react'
 import { useState } from 'react'
 import { APP_NAME, NAV_LINKS, ROUTES } from '@/constants'
+import { useAuth } from '@/context/AuthContext'
 import { useTheme } from '@/context/ThemeContext'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -24,6 +25,13 @@ export function ThemeToggle() {
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
+  const navigate = useNavigate()
+  const { user, logout } = useAuth()
+
+  const handleLogout = async () => {
+    await logout()
+    void navigate(ROUTES.LOGIN)
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/80 backdrop-blur-md">
@@ -55,12 +63,25 @@ export function Navbar() {
         <div className="flex items-center gap-1">
           <ThemeToggle />
           <div className="hidden items-center gap-2 sm:flex">
-            <Button variant="ghost" size="sm" asChild>
-              <Link to={ROUTES.LOGIN}>Log in</Link>
-            </Button>
-            <Button size="sm" asChild>
-              <Link to={ROUTES.SIGNUP}>Sign up</Link>
-            </Button>
+            {user ? (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to={ROUTES.PROFILE}>Profile</Link>
+                </Button>
+                <Button size="sm" variant="outline" onClick={handleLogout}>
+                  Log out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to={ROUTES.LOGIN}>Log in</Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link to={ROUTES.SIGNUP}>Sign up</Link>
+                </Button>
+              </>
+            )}
           </div>
           <Button
             variant="ghost"
@@ -94,16 +115,34 @@ export function Navbar() {
               </NavLink>
             ))}
             <div className="mt-2 flex gap-2 border-t border-border pt-3 sm:hidden">
-              <Button variant="outline" className="flex-1" asChild>
-                <Link to={ROUTES.LOGIN} onClick={() => setOpen(false)}>
-                  Log in
-                </Link>
-              </Button>
-              <Button className="flex-1" asChild>
-                <Link to={ROUTES.SIGNUP} onClick={() => setOpen(false)}>
-                  Sign up
-                </Link>
-              </Button>
+              {user ? (
+                <>
+                  <Button variant="outline" className="flex-1" asChild>
+                    <Link to={ROUTES.PROFILE} onClick={() => setOpen(false)}>
+                      Profile
+                    </Link>
+                  </Button>
+                  <Button className="flex-1" onClick={() => {
+                    setOpen(false)
+                    void handleLogout()
+                  }}>
+                    Log out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" className="flex-1" asChild>
+                    <Link to={ROUTES.LOGIN} onClick={() => setOpen(false)}>
+                      Log in
+                    </Link>
+                  </Button>
+                  <Button className="flex-1" asChild>
+                    <Link to={ROUTES.SIGNUP} onClick={() => setOpen(false)}>
+                      Sign up
+                    </Link>
+                  </Button>
+                </>
+              )}
             </div>
           </nav>
         </div>

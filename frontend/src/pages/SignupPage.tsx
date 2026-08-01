@@ -5,40 +5,44 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { authService } from '@/services'
+import { useAuth } from '@/context/AuthContext'
 import { signupSchema, type SignupFormValues } from '@/lib/validations'
 import { ROUTES } from '@/constants'
 import { toast } from '@/hooks/use-toast'
 
 export default function SignupPage() {
   const navigate = useNavigate()
+  const { signup } = useAuth()
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
-    defaultValues: { name: '', username: '', email: '', password: '', confirmPassword: '' },
+    defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
   })
 
   const onSubmit = handleSubmit(async (values) => {
-    await authService.signup(values)
-    toast({ title: 'Account created', description: 'Mock signup complete. Welcome to AlgoJourney!' })
-    void navigate(ROUTES.DASHBOARD)
+    try {
+      await signup(values)
+      toast({ title: 'Account created', description: 'Your account is ready.' })
+      void navigate(ROUTES.DASHBOARD)
+    } catch (error) {
+      toast({ title: 'Signup failed', description: error instanceof Error ? error.message : 'Unable to create account.' })
+    }
   })
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Create account</CardTitle>
-        <CardDescription>Start tracking your DSA journey. No real auth yet.</CardDescription>
+        <CardDescription>Start tracking your DSA journey with a real backend account.</CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="space-y-4">
           {(
             [
               ['name', 'Name', 'text', 'name'],
-              ['username', 'Username', 'text', 'username'],
               ['email', 'Email', 'email', 'email'],
               ['password', 'Password', 'password', 'new-password'],
               ['confirmPassword', 'Confirm password', 'password', 'new-password'],

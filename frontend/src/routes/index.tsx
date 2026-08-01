@@ -6,6 +6,7 @@ import { AdminLayout } from '@/layouts/AdminLayout'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { Loader } from '@/components/EmptyState'
 import { ROUTES } from '@/constants'
+import { useAuth } from '@/context/AuthContext'
 
 const HomePage = lazy(() => import('@/pages/HomePage'))
 const AboutPage = lazy(() => import('@/pages/AboutPage'))
@@ -22,6 +23,7 @@ const SettingsPage = lazy(() => import('@/pages/SettingsPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const SignupPage = lazy(() => import('@/pages/SignupPage'))
 const ForgotPasswordPage = lazy(() => import('@/pages/ForgotPasswordPage'))
+const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage'))
 const AdminProblemsPage = lazy(() => import('@/pages/admin/AdminProblemsPage'))
@@ -30,6 +32,16 @@ const EditProblemPage = lazy(() => import('@/pages/admin/EditProblemPage'))
 
 function PageFallback() {
   return <Loader label="Loading page..." />
+}
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return <Loader label="Checking session..." />
+  }
+
+  return user ? <>{children}</> : <Navigate to={ROUTES.LOGIN} replace />
 }
 
 export function AppRoutes() {
@@ -52,16 +64,30 @@ export function AppRoutes() {
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
           <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+          <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
         </Route>
 
-        <Route element={<DashboardLayout />}>
+        <Route
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
           <Route path={ROUTES.BOOKMARKS} element={<BookmarksPage />} />
           <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
           <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
         </Route>
 
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<AdminDashboardPage />} />
           <Route path="problems" element={<AdminProblemsPage />} />
           <Route path="problems/create" element={<CreateProblemPage />} />

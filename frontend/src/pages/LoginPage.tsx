@@ -5,13 +5,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { authService } from '@/services'
+import { useAuth } from '@/context/AuthContext'
 import { loginSchema, type LoginFormValues } from '@/lib/validations'
 import { ROUTES } from '@/constants'
 import { toast } from '@/hooks/use-toast'
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const {
     register,
     handleSubmit,
@@ -22,16 +23,20 @@ export default function LoginPage() {
   })
 
   const onSubmit = handleSubmit(async (values) => {
-    await authService.login(values)
-    toast({ title: 'Welcome back', description: 'Logged in with mock auth (UI only).' })
-    void navigate(ROUTES.DASHBOARD)
+    try {
+      await login(values)
+      toast({ title: 'Welcome back', description: 'Signed in successfully.' })
+      void navigate(ROUTES.DASHBOARD)
+    } catch (error) {
+      toast({ title: 'Login failed', description: error instanceof Error ? error.message : 'Unable to sign in.' })
+    }
   })
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Log in</CardTitle>
-        <CardDescription>Continue your DSA journey. Auth is UI-only in this phase.</CardDescription>
+        <CardDescription>Continue your DSA journey with your real account.</CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="space-y-4">

@@ -1,18 +1,11 @@
 import { delay } from '@/lib/utils'
-import {
-  achievements,
-  activities,
-  adminUser,
-  bookmarks,
-  currentUser,
-  dashboardStats,
-} from '@/data'
+import { achievements, activities, adminUser, bookmarks, dashboardStats } from '@/data'
 import type { Achievement, Activity, Bookmark, DashboardStats, User } from '@/types'
+import { authService } from './authService'
 
 export const userService = {
   async getCurrentUser(): Promise<User> {
-    await delay()
-    return currentUser
+    return authService.getCurrentUser()
   },
 
   async getAdminUser(): Promise<User> {
@@ -31,8 +24,8 @@ export const userService = {
   },
 
   async updateProfile(data: Partial<User>): Promise<User> {
-    await delay(400)
-    return { ...currentUser, ...data }
+    const user = await authService.getCurrentUser()
+    return { ...user, ...data }
   },
 }
 
