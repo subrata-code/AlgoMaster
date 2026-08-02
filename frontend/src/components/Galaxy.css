@@ -1,4 +1,5 @@
-.galaxy-container {
+.galaxy-container,
+.lightfall-container {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -8,7 +9,8 @@
   z-index: 0;
 }
 
-.galaxy-container canvas {
+.galaxy-container canvas,
+.lightfall-container canvas {
   display: block;
   width: 100%;
   height: 100%;

@@ -12,7 +12,7 @@ import { PremiumModal } from '@/components/PremiumModal'
 import { HintsDialog } from '@/components/HintsDialog'
 import { Loader } from '@/components/EmptyState'
 import { FadeIn, Section } from '@/components/PageHeader'
-import Galaxy from '@/components/Animate'
+import Animate from '@/components/Animate'
 import { APP_NAME, APP_TAGLINE, ROUTES } from '@/constants'
 import { contentService, problemService } from '@/services'
 import { newsletterSchema, type NewsletterFormValues } from '@/lib/validations'
@@ -83,22 +83,25 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="gradient-mesh relative overflow-hidden border-b border-border">
-        <Galaxy
-          focal={[0.5, 0.5]}
-          rotation={[1.0, 0.0]}
-          starSpeed={0.5}
-          density={1}
-          hueShift={140}
-          speed={1.0}
-          glowIntensity={0.3}
-          saturation={0.0}
-          mouseRepulsion
-          twinkleIntensity={0.3}
-          rotationSpeed={0.1}
-          repulsionStrength={2}
-          autoCenterRepulsion={0}
-          transparent
+      <section className="gradient-mesh relative isolate overflow-hidden border-b border-border">
+        <Animate
+          className="absolute inset-0"
+          colors={['#A6C8FF', '#5227FF', '#FF9FFC']}
+          backgroundColor="#0A29FF"
+          speed={0.5}
+          streakCount={3}
+          streakWidth={1.2}
+          streakLength={1.4}
+          glow={1.1}
+          density={0.7}
+          twinkle={0.9}
+          zoom={2.8}
+          backgroundGlow={0.4}
+          opacity={1}
+          mouseInteraction
+          mouseStrength={0.6}
+          mouseRadius={1.15}
+          mouseDampening={0.12}
         />
         <div className="container-page relative z-10 py-20 sm:py-28">
           <FadeIn>
