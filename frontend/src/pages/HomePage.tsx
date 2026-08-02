@@ -12,6 +12,7 @@ import { PremiumModal } from '@/components/PremiumModal'
 import { HintsDialog } from '@/components/HintsDialog'
 import { Loader } from '@/components/EmptyState'
 import { FadeIn, Section } from '@/components/PageHeader'
+import Galaxy from '@/components/Animate'
 import { APP_NAME, APP_TAGLINE, ROUTES } from '@/constants'
 import { contentService, problemService } from '@/services'
 import { newsletterSchema, type NewsletterFormValues } from '@/lib/validations'
@@ -82,8 +83,24 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="gradient-mesh border-b border-border">
-        <div className="container-page py-20 sm:py-28">
+      <section className="gradient-mesh relative overflow-hidden border-b border-border">
+        <Galaxy
+          focal={[0.5, 0.5]}
+          rotation={[1.0, 0.0]}
+          starSpeed={0.5}
+          density={1}
+          hueShift={140}
+          speed={1.0}
+          glowIntensity={0.3}
+          saturation={0.0}
+          mouseRepulsion
+          twinkleIntensity={0.3}
+          rotationSpeed={0.1}
+          repulsionStrength={2}
+          autoCenterRepulsion={0}
+          transparent
+        />
+        <div className="container-page relative z-10 py-20 sm:py-28">
           <FadeIn>
             <p className="mb-4 text-sm font-medium tracking-wide text-muted-foreground">{APP_NAME}</p>
             <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
