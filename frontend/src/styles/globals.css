@@ -110,6 +110,45 @@
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 
+  .dashboard-window-surface {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+    background: color-mix(in srgb, var(--card) 72%, transparent);
+    backdrop-filter: blur(18px);
+    box-shadow:
+      0 18px 60px -32px rgba(76, 29, 149, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .dashboard-window-surface::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(135deg, rgba(120, 85, 255, 0.1), transparent 32%),
+      radial-gradient(circle at top right, rgba(99, 102, 241, 0.12), transparent 40%);
+    opacity: 0.95;
+  }
+
+  .dashboard-sidebar {
+    position: relative;
+  }
+
+  .dashboard-sidebar::before {
+    content: '';
+    position: absolute;
+    inset: -10px -10px auto auto;
+    width: 90px;
+    height: 90px;
+    border-radius: 9999px;
+    filter: blur(24px);
+    background: rgba(120, 85, 255, 0.14);
+    pointer-events: none;
+  }
+
   .text-balance {
     text-wrap: balance;
   }

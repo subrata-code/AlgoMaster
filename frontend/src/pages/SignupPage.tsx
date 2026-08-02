@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
+import { SocialAuthButtons } from '@/components/SocialAuthButtons'
 import { useAuth } from '@/context/AuthContext'
 import { signupSchema, type SignupFormValues } from '@/lib/validations'
 import { ROUTES } from '@/constants'
@@ -32,6 +34,13 @@ export default function SignupPage() {
     }
   })
 
+  const handleSocialAuth = (provider: 'Google' | 'GitHub' | 'LinkedIn') => {
+    toast({
+      title: `${provider} auth is not configured yet`,
+      description: 'Enable the backend OAuth provider first, then wire it to this button.',
+    })
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -40,6 +49,14 @@ export default function SignupPage() {
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="space-y-4">
+          <SocialAuthButtons onSelect={handleSocialAuth} />
+
+          <div className="flex items-center gap-3">
+            <Separator className="flex-1" />
+            <span className="text-xs uppercase tracking-[0.22em] text-muted-foreground">or</span>
+            <Separator className="flex-1" />
+          </div>
+
           {(
             [
               ['name', 'Name', 'text', 'name'],
