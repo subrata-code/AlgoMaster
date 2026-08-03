@@ -103,16 +103,16 @@ export default function HomePage() {
           mouseRadius={1.15}
           mouseDampening={0.12}
         />
-        <div className="container-page relative z-10 py-20 sm:py-28">
-          <FadeIn>
+        <div className="container-page relative z-10 flex flex-col items-center py-20 text-center sm:py-28">
+          <FadeIn className="flex flex-col items-center text-center">
             <p className="mb-4 text-sm font-medium tracking-wide text-muted-foreground">{APP_NAME}</p>
-            <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+            <h1 className="max-w-5xl text-16xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
               {APP_TAGLINE}
             </h1>
-            <p className="mt-5 max-w-xl text-lg text-muted-foreground">
+            <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
               Curated problems, structured roadmaps, and a 100-day journey — built for engineers who want clarity, not chaos.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button size="lg" asChild>
                 <Link to={ROUTES.PROBLEMS}>
                   Explore Problems
@@ -126,15 +126,15 @@ export default function HomePage() {
           </FadeIn>
 
           {stats && (
-            <FadeIn delay={0.1} className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <FadeIn delay={0.1} className="mt-16 mx-auto grid max-w-5xl grid-cols-4 gap-4 sm:grid-cols-4">
               {[
                 { label: 'Problems', value: stats.problems },
                 { label: 'Learners', value: stats.learners.toLocaleString() },
                 { label: 'Topics', value: stats.topics },
                 { label: 'Companies', value: stats.companies },
               ].map((item) => (
-                <Card key={item.label} className="bg-card/80">
-                  <CardContent className="p-5">
+                <Card key={item.label} className="bg-card/80 text-center">
+                  <CardContent className="p-5 text-center">
                     <p className="text-2xl font-semibold tabular-nums">{item.value}</p>
                     <p className="text-sm text-muted-foreground">{item.label}</p>
                   </CardContent>
