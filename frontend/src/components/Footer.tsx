@@ -22,7 +22,7 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-card/40">
+    <footer className="relative z-20 border-t border-border bg-card/40">
       <div className="container-page py-12">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-3">
@@ -63,7 +63,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-2 border-t border-border pt-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {APP_NAME}. All rights reserved.</p>
-          <p>Frontend foundation — mock data only.</p>
+          <p>Co-Founder -Subrata Bag.</p>
         </div>
       </div>
     </footer>
