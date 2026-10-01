@@ -31,11 +31,11 @@ export default function SettingsPage() {
       <PageHeader title="Settings" description="Manage theme, notifications, privacy, and account." />
 
       <Tabs defaultValue="theme">
-        <TabsList className="mb-4">
-          <TabsTrigger value="theme">Theme</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="privacy">Privacy</TabsTrigger>
-          <TabsTrigger value="danger">Danger Zone</TabsTrigger>
+        <TabsList className="mb-4 w-full max-w-full overflow-x-auto">
+          <TabsTrigger value="theme" className="text-xs sm:text-sm">Theme</TabsTrigger>
+          <TabsTrigger value="notifications" className="text-xs sm:text-sm">Notifications</TabsTrigger>
+          <TabsTrigger value="privacy" className="text-xs sm:text-sm">Privacy</TabsTrigger>
+          <TabsTrigger value="danger" className="text-xs sm:text-sm">Danger Zone</TabsTrigger>
         </TabsList>
 
         <TabsContent value="theme">

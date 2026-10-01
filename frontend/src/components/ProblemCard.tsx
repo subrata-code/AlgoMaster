@@ -75,22 +75,22 @@ export function ProblemCard({
         </div>
       </CardContent>
 
-      <CardFooter className="flex flex-wrap gap-2 border-t border-border pt-4">
-        <Button size="sm" variant="outline" asChild>
+      <CardFooter className="flex flex-wrap gap-1.5 border-t border-border pt-4 sm:gap-2">
+        <Button size="sm" variant="outline" asChild className="h-8 px-2.5 text-xs sm:h-9 sm:px-3 sm:text-sm">
           <a href={problem.link} target="_blank" rel="noreferrer">
             <ExternalLink className="h-3.5 w-3.5" />
             Open
           </a>
         </Button>
-        <Button size="sm" variant="ghost" onClick={() => onHints?.(problem)}>
+        <Button size="sm" variant="ghost" onClick={() => onHints?.(problem)} className="h-8 px-2.5 text-xs sm:h-9 sm:px-3 sm:text-sm">
           <Lightbulb className="h-3.5 w-3.5" />
           Hints
         </Button>
-        <Button size="sm" variant="ghost" onClick={() => onLocked?.('solution')}>
+        <Button size="sm" variant="ghost" onClick={() => onLocked?.('solution')} className="h-8 px-2.5 text-xs sm:h-9 sm:px-3 sm:text-sm">
           <Lock className="h-3.5 w-3.5" />
           Solution
         </Button>
-        <Button size="sm" variant="ghost" onClick={() => onLocked?.('video')}>
+        <Button size="sm" variant="ghost" onClick={() => onLocked?.('video')} className="h-8 px-2.5 text-xs sm:h-9 sm:px-3 sm:text-sm">
           <Play className="h-3.5 w-3.5" />
           Video
         </Button>
@@ -99,7 +99,7 @@ export function ProblemCard({
           variant="ghost"
           aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark problem'}
           onClick={() => onBookmark?.(problem.id)}
-          className="ml-auto"
+          className="ml-auto h-8 w-8 p-0 sm:h-9 sm:w-auto sm:px-3"
         >
           {bookmarked ? (
             <BookmarkCheck className="h-3.5 w-3.5 text-primary" />

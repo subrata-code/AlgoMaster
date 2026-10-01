@@ -138,7 +138,7 @@ export default function ProblemsPage() {
           </SelectContent>
         </Select>
         <Select value={sortBy} onValueChange={(v) => setSortBy(v as ProblemFilters['sortBy'])}>
-          <SelectTrigger aria-label="Sort problems" className="sm:col-span-2 lg:col-span-1">
+          <SelectTrigger aria-label="Sort problems">
             <SelectValue placeholder="Sort" />
           </SelectTrigger>
           <SelectContent>

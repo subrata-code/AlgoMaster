@@ -36,7 +36,7 @@ export default function DashboardPage() {
   const progress = Math.round((stats.solved / stats.totalProblems) * 100)
 
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader title="Dashboard" description="Your progress, streak, and recent activity at a glance." />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

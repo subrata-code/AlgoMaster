@@ -12,7 +12,7 @@ import { PremiumModal } from '@/components/PremiumModal'
 import { HintsDialog } from '@/components/HintsDialog'
 import { Loader } from '@/components/EmptyState'
 import { FadeIn, Section } from '@/components/PageHeader'
-import Animate from '@/components/Animate'
+import GradientWaves from '@/components/GradientWaves'
 import { APP_NAME, APP_TAGLINE, ROUTES } from '@/constants'
 import { contentService, problemService } from '@/services'
 import { newsletterSchema, type NewsletterFormValues } from '@/lib/validations'
@@ -82,237 +82,246 @@ export default function HomePage() {
   if (loading) return <Loader label="Loading AlgoJourney..." />
 
   return (
-    <>
-      <section className="gradient-mesh relative isolate overflow-hidden border-b border-border">
-        <Animate
-          className="absolute inset-0"
-          colors={['#A6C8FF', '#5227FF', '#FF9FFC']}
-          backgroundColor="#0A29FF"
-          speed={0.5}
-          streakCount={3}
-          streakWidth={1.2}
-          streakLength={1.4}
-          glow={1.1}
-          density={0.7}
-          twinkle={0.9}
-          zoom={2.8}
-          backgroundGlow={0.4}
-          opacity={1}
-          mouseInteraction
-          mouseStrength={0.6}
-          mouseRadius={1.15}
-          mouseDampening={0.12}
-        />
-        <div className="container-page relative z-10 flex flex-col items-center py-20 text-center sm:py-28">
-          <FadeIn className="flex flex-col items-center text-center">
-            <p className="mb-4 text-sm font-medium tracking-wide text-muted-foreground">{APP_NAME}</p>
-            <h1 className="max-w-5xl text-16xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-              {APP_TAGLINE}
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
-              Curated problems, structured roadmaps, and a 100-day journey — built for engineers who want clarity, not chaos.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Button size="lg" asChild>
-                <Link to={ROUTES.PROBLEMS}>
-                  Explore Problems
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link to={ROUTES.ROADMAP}>View Roadmap</Link>
-              </Button>
-            </div>
-          </FadeIn>
+    <div className="relative min-h-screen">
+      {/* Full-page animated wave background — fixed so it stays visible during scroll */}
+      <GradientWaves
+        className="!fixed inset-0 !h-screen"
+        horizonColor="#5227FF"
+        waveColor="#FF9FFC"
+        crestColor="#FFFFFF"
+        speed={0.4}
+        amplitude={2.5}
+        waveScale={0.6}
+        waveRatio={0.9}
+        swell={35}
+        turbulence={20}
+        tilt={1.11}
+        zoom={1}
+        height={5.5}
+        fogDepth={15}
+        detail="medium"
+        brightness={1}
+        opacity={1}
+        mouseInteraction
+        parallaxStrength={0.5}
+        grain
+        grainIntensity={0.05}
+      />
 
-          {stats && (
-            <FadeIn delay={0.1} className="mt-16 mx-auto grid max-w-5xl grid-cols-4 gap-4 sm:grid-cols-4">
-              {[
-                { label: 'Problems', value: stats.problems },
-                { label: 'Learners', value: stats.learners.toLocaleString() },
-                { label: 'Topics', value: stats.topics },
-                { label: 'Companies', value: stats.companies },
-              ].map((item) => (
-                <Card key={item.label} className="bg-card/80 text-center">
-                  <CardContent className="p-5 text-center">
-                    <p className="text-2xl font-semibold tabular-nums">{item.value}</p>
-                    <p className="text-sm text-muted-foreground">{item.label}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </FadeIn>
-          )}
-        </div>
-      </section>
-
-      <Section>
-        <div className="mb-8 flex items-end justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-semibold tracking-tight">Featured Problems</h2>
-            <p className="mt-1 text-muted-foreground">High-signal problems interviewers love to ask.</p>
-          </div>
-          <Button variant="ghost" asChild className="hidden sm:inline-flex">
-            <Link to={ROUTES.PROBLEMS}>View all</Link>
-          </Button>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((p) => (
-            <ProblemCard
-              key={p.id}
-              problem={p}
-              onHints={setHintsProblem}
-              onLocked={(type) => {
-                setPremiumType(type)
-                setPremiumOpen(true)
-              }}
-            />
-          ))}
-        </div>
-      </Section>
-
-      {currentDay && (
-        <Section className="bg-muted/30">
-          <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr] lg:items-center">
-            <div>
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs font-medium">
-                <Flame className="h-3.5 w-3.5 text-warning" />
-                Current Day
-              </div>
-              <h2 className="text-2xl font-semibold tracking-tight">{currentDay.title}</h2>
-              <p className="mt-2 text-muted-foreground">
-                Focus: {currentDay.focus}. Keep your streak alive and stay consistent.
+      {/* All page content sits above the background */}
+      <div className="relative z-10">
+        <section className="relative isolate overflow-hidden border-b border-white/10">
+          <div className="container-page relative flex flex-col items-center py-20 text-center sm:py-28">
+            <FadeIn className="flex flex-col items-center text-center">
+              <p className="mb-4 text-sm font-medium tracking-wide text-white/70">{APP_NAME}</p>
+              <h1 className="max-w-5xl text-3xl font-semibold tracking-tight text-balance text-white sm:text-5xl lg:text-6xl">
+                {APP_TAGLINE}
+              </h1>
+              <p className="mt-5 max-w-2xl text-lg text-white/70">
+                Curated problems, structured roadmaps, and a 100-day journey — built for engineers who want clarity, not chaos.
               </p>
-              <Button className="mt-6" asChild>
-                <Link to={ROUTES.JOURNEY_100}>Open 100 Days Journey</Link>
-              </Button>
+              <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <Button size="lg" asChild>
+                  <Link to={ROUTES.PROBLEMS}>
+                    Explore Problems
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10" asChild>
+                  <Link to={ROUTES.ROADMAP}>View Roadmap</Link>
+                </Button>
+              </div>
+            </FadeIn>
+
+            {stats && (
+              <FadeIn delay={0.1} className="mt-16 mx-auto grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+                {[
+                  { label: 'Problems', value: stats.problems },
+                  { label: 'Learners', value: stats.learners.toLocaleString() },
+                  { label: 'Topics', value: stats.topics },
+                  { label: 'Companies', value: stats.companies },
+                ].map((item) => (
+                  <Card key={item.label} className="bg-white/10 backdrop-blur-md border-white/10 text-center">
+                    <CardContent className="p-5 text-center">
+                      <p className="text-2xl font-semibold tabular-nums text-white">{item.value}</p>
+                      <p className="text-sm text-white/60">{item.label}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </FadeIn>
+            )}
+          </div>
+        </section>
+
+        <Section className="bg-background/80 backdrop-blur-sm">
+          <div className="mb-8 flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight">Featured Problems</h2>
+              <p className="mt-1 text-muted-foreground">High-signal problems interviewers love to ask.</p>
             </div>
-            {currentProblem ? (
+            <Button variant="ghost" asChild className="hidden sm:inline-flex">
+              <Link to={ROUTES.PROBLEMS}>View all</Link>
+            </Button>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((p) => (
               <ProblemCard
-                problem={currentProblem}
+                key={p.id}
+                problem={p}
                 onHints={setHintsProblem}
                 onLocked={(type) => {
                   setPremiumType(type)
                   setPremiumOpen(true)
                 }}
               />
-            ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Day {currentDay.day}</CardTitle>
-                  <CardDescription>Problems for this day are coming soon.</CardDescription>
-                </CardHeader>
-              </Card>
-            )}
+            ))}
           </div>
         </Section>
-      )}
 
-      <Section>
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold tracking-tight">Roadmap Preview</h2>
-          <p className="mt-1 text-muted-foreground">A clear path from foundations to advanced design problems.</p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {roadmap.map((phase) => (
-            <Card key={phase.id}>
-              <CardHeader>
-                <div className="flex items-center justify-between gap-2">
-                  <CardTitle className="text-base">
-                    Phase {phase.order}: {phase.title}
-                  </CardTitle>
-                  {phase.isCompleted && <CheckCircle2 className="h-4 w-4 text-success" aria-label="Completed" />}
+        {currentDay && (
+          <Section className="bg-background/70 backdrop-blur-sm">
+            <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr] lg:items-center">
+              <div>
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs font-medium">
+                  <Flame className="h-3.5 w-3.5 text-warning" />
+                  Current Day
                 </div>
-                <CardDescription>{phase.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="text-xs text-muted-foreground">{phase.duration}</CardContent>
-            </Card>
-          ))}
-        </div>
-        <Button variant="outline" className="mt-6" asChild>
-          <Link to={ROUTES.ROADMAP}>See full roadmap</Link>
-        </Button>
-      </Section>
-
-      <Section className="bg-muted/30">
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold tracking-tight">Recent Problems</h2>
-          <p className="mt-1 text-muted-foreground">Fresh additions to the practice set.</p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {recent.map((p) => (
-            <ProblemCard
-              key={p.id}
-              problem={p}
-              onHints={setHintsProblem}
-              onLocked={(type) => {
-                setPremiumType(type)
-                setPremiumOpen(true)
-              }}
-            />
-          ))}
-        </div>
-      </Section>
-
-      <Section>
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold tracking-tight">What learners say</h2>
-          <p className="mt-1 text-muted-foreground">Testimonials placeholder — real stories coming soon.</p>
-        </div>
-        <div className="grid gap-4 md:grid-cols-3">
-          {testimonials.map((t) => (
-            <Card key={t.id}>
-              <CardContent className="space-y-4 p-6">
-                <p className="text-sm leading-relaxed text-muted-foreground">&ldquo;{t.content}&rdquo;</p>
-                <div>
-                  <p className="text-sm font-medium">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </Section>
-
-      <Section className="bg-muted/30">
-        <div className="mx-auto max-w-2xl">
-          <h2 className="mb-6 text-2xl font-semibold tracking-tight">FAQ</h2>
-          <Accordion type="single" collapsible className="rounded-xl border border-border bg-card px-4">
-            {faqs.map((faq) => (
-              <AccordionItem key={faq.id} value={faq.id}>
-                <AccordionTrigger>{faq.question}</AccordionTrigger>
-                <AccordionContent>{faq.answer}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </Section>
-
-      <Section>
-        <Card className="overflow-hidden">
-          <CardContent className="grid gap-6 p-8 md:grid-cols-[1.2fr_1fr] md:items-center">
-            <div>
-              <h2 className="text-2xl font-semibold tracking-tight">Stay in the loop</h2>
-              <p className="mt-2 text-muted-foreground">
-                Weekly DSA tips, new problems, and journey updates. No spam.
-              </p>
+                <h2 className="text-2xl font-semibold tracking-tight">{currentDay.title}</h2>
+                <p className="mt-2 text-muted-foreground">
+                  Focus: {currentDay.focus}. Keep your streak alive and stay consistent.
+                </p>
+                <Button className="mt-6" asChild>
+                  <Link to={ROUTES.JOURNEY_100}>Open 100 Days Journey</Link>
+                </Button>
+              </div>
+              {currentProblem ? (
+                <ProblemCard
+                  problem={currentProblem}
+                  onHints={setHintsProblem}
+                  onLocked={(type) => {
+                    setPremiumType(type)
+                    setPremiumOpen(true)
+                  }}
+                />
+              ) : (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Day {currentDay.day}</CardTitle>
+                    <CardDescription>Problems for this day are coming soon.</CardDescription>
+                  </CardHeader>
+                </Card>
+              )}
             </div>
-            <form onSubmit={onNewsletter} className="flex flex-col gap-2 sm:flex-row">
-              <Input
-                type="email"
-                placeholder="you@email.com"
-                aria-label="Email for newsletter"
-                {...form.register('email')}
+          </Section>
+        )}
+
+        <Section className="bg-background/80 backdrop-blur-sm">
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold tracking-tight">Roadmap Preview</h2>
+            <p className="mt-1 text-muted-foreground">A clear path from foundations to advanced design problems.</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {roadmap.map((phase) => (
+              <Card key={phase.id}>
+                <CardHeader>
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className="text-base">
+                      Phase {phase.order}: {phase.title}
+                    </CardTitle>
+                    {phase.isCompleted && <CheckCircle2 className="h-4 w-4 text-success" aria-label="Completed" />}
+                  </div>
+                  <CardDescription>{phase.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-xs text-muted-foreground">{phase.duration}</CardContent>
+              </Card>
+            ))}
+          </div>
+          <Button variant="outline" className="mt-6" asChild>
+            <Link to={ROUTES.ROADMAP}>See full roadmap</Link>
+          </Button>
+        </Section>
+
+        <Section className="bg-background/70 backdrop-blur-sm">
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold tracking-tight">Recent Problems</h2>
+            <p className="mt-1 text-muted-foreground">Fresh additions to the practice set.</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {recent.map((p) => (
+              <ProblemCard
+                key={p.id}
+                problem={p}
+                onHints={setHintsProblem}
+                onLocked={(type) => {
+                  setPremiumType(type)
+                  setPremiumOpen(true)
+                }}
               />
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                Subscribe
-              </Button>
-            </form>
-            {form.formState.errors.email && (
-              <p className="text-sm text-destructive md:col-span-2">{form.formState.errors.email.message}</p>
-            )}
-          </CardContent>
-        </Card>
-      </Section>
+            ))}
+          </div>
+        </Section>
+
+        <Section className="bg-background/80 backdrop-blur-sm">
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold tracking-tight">What learners say</h2>
+            <p className="mt-1 text-muted-foreground">Testimonials placeholder — real stories coming soon.</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            {testimonials.map((t) => (
+              <Card key={t.id}>
+                <CardContent className="space-y-4 p-6">
+                  <p className="text-sm leading-relaxed text-muted-foreground">&ldquo;{t.content}&rdquo;</p>
+                  <div>
+                    <p className="text-sm font-medium">{t.name}</p>
+                    <p className="text-xs text-muted-foreground">{t.role}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </Section>
+
+        <Section className="bg-background/70 backdrop-blur-sm">
+          <div className="mx-auto max-w-2xl">
+            <h2 className="mb-6 text-2xl font-semibold tracking-tight">FAQ</h2>
+            <Accordion type="single" collapsible className="rounded-xl border border-border bg-card/90 backdrop-blur-sm px-4">
+              {faqs.map((faq) => (
+                <AccordionItem key={faq.id} value={faq.id}>
+                  <AccordionTrigger>{faq.question}</AccordionTrigger>
+                  <AccordionContent>{faq.answer}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </Section>
+
+        <Section className="bg-background/80 backdrop-blur-sm">
+          <Card className="overflow-hidden">
+            <CardContent className="grid gap-6 p-8 md:grid-cols-[1.2fr_1fr] md:items-center">
+              <div>
+                <h2 className="text-2xl font-semibold tracking-tight">Stay in the loop</h2>
+                <p className="mt-2 text-muted-foreground">
+                  Weekly DSA tips, new problems, and journey updates. No spam.
+                </p>
+              </div>
+              <form onSubmit={onNewsletter} className="flex flex-col gap-2 sm:flex-row">
+                <Input
+                  type="email"
+                  placeholder="you@email.com"
+                  aria-label="Email for newsletter"
+                  {...form.register('email')}
+                />
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  Subscribe
+                </Button>
+              </form>
+              {form.formState.errors.email && (
+                <p className="text-sm text-destructive md:col-span-2">{form.formState.errors.email.message}</p>
+              )}
+            </CardContent>
+          </Card>
+        </Section>
+      </div>
 
       <PremiumModal open={premiumOpen} onOpenChange={setPremiumOpen} contentType={premiumType} />
       <HintsDialog
@@ -320,6 +329,7 @@ export default function HomePage() {
         open={Boolean(hintsProblem)}
         onOpenChange={(open) => !open && setHintsProblem(null)}
       />
-    </>
+    </div>
   )
 }
+

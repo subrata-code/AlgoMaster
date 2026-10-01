@@ -94,14 +94,26 @@
 
   html {
     @apply scroll-smooth;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
 
   ::selection {
     @apply bg-primary/15 text-foreground;
+  }
+}
+
+/* Mobile fallback gradient when WebGL is disabled to prevent lag */
+@media (max-width: 767px) {
+  .lightfall-container,
+  .gradient-waves-container {
+    background: linear-gradient(135deg, #5227FF 0%, #FF9FFC 60%, #1a0a4e 100%);
   }
 }
 
