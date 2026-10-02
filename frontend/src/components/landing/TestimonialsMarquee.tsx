@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@/constants'
 import type { Testimonial } from '@/types'
+import InfiniteSpiral, { type InfiniteSpiralItem } from '@/components/ui/InfiniteSpiral'
 
 interface TestimonialsMarqueeProps {
   testimonials: Testimonial[]
@@ -10,21 +11,21 @@ interface TestimonialsMarqueeProps {
 
 function TestimonialCard({ t }: { t: Testimonial }) {
   return (
-    <div className="testimonial-card">
-      <p className="text-sm leading-relaxed text-white/70">
+    <div className="flex h-full flex-col justify-between p-4 bg-[#111] backdrop-blur-md">
+      <p className="text-xs leading-relaxed text-white/70">
         &ldquo;{t.content}&rdquo;
       </p>
-      <div className="mt-4 flex items-center gap-3">
+      <div className="mt-3 flex items-center gap-2">
         {t.avatar ? (
-          <img src={t.avatar} alt={t.name} className="h-8 w-8 rounded-full object-cover" />
+          <img src={t.avatar} alt={t.name} className="h-6 w-6 rounded-full object-cover" />
         ) : (
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-semibold text-white/70">
+          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-[10px] font-semibold text-white/70">
             {t.name.charAt(0)}
           </div>
         )}
-        <div>
-          <p className="text-sm font-medium text-white/90">{t.name}</p>
-          <p className="text-xs text-white/40">{t.role}</p>
+        <div className="min-w-0">
+          <p className="truncate text-xs font-medium text-white/90">{t.name}</p>
+          <p className="truncate text-[10px] text-white/40">{t.role}</p>
         </div>
       </div>
     </div>
@@ -34,14 +35,17 @@ function TestimonialCard({ t }: { t: Testimonial }) {
 export function TestimonialsMarquee({ testimonials }: TestimonialsMarqueeProps) {
   if (testimonials.length === 0) return null
 
-  // Duplicate to create continuous marquee effect
-  const col1 = [...testimonials, ...testimonials]
-  const col2 = [...testimonials.slice().reverse(), ...testimonials.slice().reverse()]
+  // Map testimonials to InfiniteSpiral items
+  const spiralItems: InfiniteSpiralItem[] = testimonials.map((t, index) => ({
+    id: `testim-${t.id || index}`,
+    content: <TestimonialCard t={t} />,
+    alt: t.name,
+  }))
 
   return (
     <section className="relative py-20 sm:py-28 overflow-hidden" id="testimonials" aria-labelledby="testimonials-heading">
       <div className="container-page relative z-10">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
+        <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.3fr] lg:gap-16">
           {/* ─── Left: Text + CTA ─── */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -77,25 +81,32 @@ export function TestimonialsMarquee({ testimonials }: TestimonialsMarqueeProps) 
             </div>
           </motion.div>
 
-          {/* ─── Right: Masonry Marquee ─── */}
-          <div className="relative grid grid-cols-2 gap-4 overflow-hidden" aria-hidden="true">
-            {/* Column 1 — scrolling up */}
-            <div className="testimonial-marquee-viewport h-[420px]">
-              <div className="testimonial-marquee-track">
-                {col1.map((t, i) => (
-                  <TestimonialCard key={`c1-${t.id}-${i}`} t={t} />
-                ))}
-              </div>
-            </div>
+          {/* ─── Right: Infinite Spiral ─── */}
+          <div className="relative h-[600px] w-full" aria-hidden="true">
+            {/* Glow behind spiral */}
+            <div className="absolute left-1/2 top-1/2 -z-10 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#327CF6]/15 blur-[120px]" />
 
-            {/* Column 2 — scrolling down (reverse) */}
-            <div className="testimonial-marquee-viewport h-[420px]">
-              <div className="testimonial-marquee-track testimonial-marquee-track-reverse">
-                {col2.map((t, i) => (
-                  <TestimonialCard key={`c2-${t.id}-${i}`} t={t} />
-                ))}
-              </div>
-            </div>
+            <InfiniteSpiral
+              items={spiralItems}
+              animationMode="auto"
+              speed={0.35}
+              radius={200}
+              cardWidth={300}
+              cardHeight={180}
+              verticalSpacing={120}
+              perspective={1000}
+              cardRadius={10}
+              centerScale={1.2}
+              edgeBlur={4.25}
+              cardsPerTurn={7}
+              pauseOnHover={true}
+              direction="up"
+              rotation={-108}
+              cardTilt={0}
+              edgeFade={0.3}
+              imageFit="cover"
+              grayscale={0.55}
+            />
           </div>
         </div>
       </div>
