@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { ROLES } from '../constants/index.js';
+import { ACTIVITY_TYPES, ONBOARDING_DIFFICULTIES, ROLES } from '../constants/index.js';
 
 const progressSchema = new mongoose.Schema(
   {
@@ -15,6 +15,36 @@ const progressSchema = new mongoose.Schema(
   { _id: false },
 );
 
+const activitySchema = new mongoose.Schema(
+  {
+    type: { type: String, enum: ACTIVITY_TYPES, required: true },
+    title: { type: String, required: true },
+    description: { type: String, default: '' },
+    problemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Problem' },
+    timestamp: { type: Date, default: Date.now },
+  },
+  { timestamps: false },
+);
+
+const solvedProblemSchema = new mongoose.Schema(
+  {
+    problem: { type: mongoose.Schema.Types.ObjectId, ref: 'Problem', required: true },
+    difficulty: { type: String },
+    topics: [{ type: String }],
+    solvedAt: { type: Date, default: Date.now },
+  },
+  { _id: false },
+);
+
+const onboardingSchema = new mongoose.Schema(
+  {
+    completed: { type: Boolean, default: false },
+    difficultyPreference: { type: String, enum: ONBOARDING_DIFFICULTIES },
+    tourCompleted: { type: Boolean, default: false },
+  },
+  { _id: false },
+);
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -23,6 +53,12 @@ const userSchema = new mongoose.Schema(
       trim: true,
       minlength: [2, 'Name must be at least 2 characters'],
       maxlength: [80, 'Name cannot exceed 80 characters'],
+    },
+    username: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      maxlength: [40, 'Username cannot exceed 40 characters'],
     },
     email: {
       type: String,
@@ -42,6 +78,26 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    bio: {
+      type: String,
+      default: '',
+      maxlength: [400, 'Bio cannot exceed 400 characters'],
+    },
+    location: {
+      type: String,
+      default: '',
+      maxlength: [80, 'Location cannot exceed 80 characters'],
+    },
+    github: {
+      type: String,
+      default: '',
+      maxlength: [80, 'GitHub handle cannot exceed 80 characters'],
+    },
+    linkedin: {
+      type: String,
+      default: '',
+      maxlength: [80, 'LinkedIn handle cannot exceed 80 characters'],
+    },
     role: {
       type: String,
       enum: Object.values(ROLES),
@@ -50,11 +106,23 @@ const userSchema = new mongoose.Schema(
     bookmarks: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        // Ref to Problem model will be wired when problem CRUD is added
+        ref: 'Problem',
       },
     ],
+    solvedProblems: {
+      type: [solvedProblemSchema],
+      default: [],
+    },
+    activities: {
+      type: [activitySchema],
+      default: [],
+    },
     progress: {
       type: progressSchema,
+      default: () => ({}),
+    },
+    onboarding: {
+      type: onboardingSchema,
       default: () => ({}),
     },
     provider: {
@@ -75,6 +143,7 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: {
       transform(_doc, ret) {
+        ret.id = String(ret._id);
         delete ret.password;
         delete ret.resetPasswordToken;
         delete ret.resetPasswordExpire;
@@ -86,6 +155,10 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.pre('save', async function hashPassword() {
+  if (this.isModified('email') && !this.username) {
+    this.username = this.email.split('@')[0];
+  }
+
   if (!this.isModified('password')) {
     return;
   }
@@ -96,6 +169,14 @@ userSchema.pre('save', async function hashPassword() {
 
 userSchema.methods.comparePassword = async function comparePassword(candidate) {
   return bcrypt.compare(candidate, this.password);
+};
+
+userSchema.methods.pushActivity = function pushActivity(activity) {
+  this.activities.unshift({
+    ...activity,
+    timestamp: activity.timestamp || new Date(),
+  });
+  this.activities = this.activities.slice(0, 50);
 };
 
 const User = mongoose.model('User', userSchema);

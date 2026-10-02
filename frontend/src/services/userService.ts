@@ -1,5 +1,4 @@
-import { delay } from '@/lib/utils'
-import { achievements, activities, adminUser, bookmarks, dashboardStats } from '@/data'
+import { apiRequest } from '@/lib/api'
 import type { Achievement, Activity, Bookmark, DashboardStats, User } from '@/types'
 import { authService } from './authService'
 
@@ -8,53 +7,59 @@ export const userService = {
     return authService.getCurrentUser()
   },
 
-  async getAdminUser(): Promise<User> {
-    await delay()
-    return adminUser
-  },
-
   async getAchievements(): Promise<Achievement[]> {
-    await delay()
-    return achievements
+    const response = await apiRequest<{ achievements: Achievement[] }>('/users/me/achievements')
+    return response.data?.achievements ?? []
   },
 
   async getActivities(): Promise<Activity[]> {
-    await delay()
-    return activities
+    const response = await apiRequest<{ activities: Activity[] }>('/users/me/activity')
+    return response.data?.activities ?? []
   },
 
   async updateProfile(data: Partial<User>): Promise<User> {
-    const user = await authService.getCurrentUser()
-    return { ...user, ...data }
+    const response = await apiRequest<{ user: User }>('/users/me', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    })
+    return response.data!.user
   },
 }
 
 export const dashboardService = {
   async getStats(): Promise<DashboardStats> {
-    await delay()
-    return dashboardStats
+    const response = await apiRequest<DashboardStats>('/users/me/stats')
+    return response.data!
   },
 
   async getRecentActivity(limit = 5): Promise<Activity[]> {
-    await delay()
-    return activities.slice(0, limit)
+    const response = await apiRequest<{ activities: Activity[] }>(`/users/me/activity?limit=${limit}`)
+    return response.data?.activities ?? []
   },
 }
 
 export const bookmarkService = {
   async getAll(): Promise<Bookmark[]> {
-    await delay()
-    return bookmarks
+    const response = await apiRequest<{ bookmarks: Bookmark[] }>('/users/me/bookmarks')
+    return response.data?.bookmarks ?? []
   },
 
   async isBookmarked(problemId: string): Promise<boolean> {
-    await delay(100)
-    return bookmarks.some((b) => b.problemId === problemId)
+    try {
+      const response = await apiRequest<{ bookmarked: boolean }>(
+        `/users/me/bookmarks/${encodeURIComponent(problemId)}`,
+      )
+      return response.data?.bookmarked ?? false
+    } catch {
+      return false
+    }
   },
 
   async toggle(problemId: string): Promise<{ bookmarked: boolean }> {
-    await delay(200)
-    const exists = bookmarks.some((b) => b.problemId === problemId)
-    return { bookmarked: !exists }
+    const response = await apiRequest<{ bookmarked: boolean }>(
+      `/users/me/bookmarks/${encodeURIComponent(problemId)}`,
+      { method: 'POST' },
+    )
+    return response.data ?? { bookmarked: false }
   },
 }

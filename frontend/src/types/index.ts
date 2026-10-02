@@ -57,6 +57,9 @@ export interface User {
   location?: string
   github?: string
   linkedin?: string
+  onboardingCompleted?: boolean
+  tourCompleted?: boolean
+  difficultyPreference?: 'Beginner' | 'Intermediate' | 'Advanced'
 }
 
 export interface Achievement {

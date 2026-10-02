@@ -9,6 +9,7 @@ import { API_PREFIX, HTTP_STATUS } from './constants/index.js';
 import apiRoutes from './routes/index.js';
 import { notFound } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { sanitizeRequest } from './middleware/sanitize.js';
 
 const app = express();
 
@@ -16,16 +17,25 @@ app.set('trust proxy', 1);
 
 app.use(helmet());
 
+const allowedOrigins = [env.clientUrl, env.adminUrl].filter(Boolean);
+
 app.use(
   cors({
-    origin: env.clientUrl,
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   }),
 );
 
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '200kb' }));
+app.use(express.urlencoded({ extended: true, limit: '200kb' }));
 app.use(cookieParser());
+app.use(sanitizeRequest);
 
 if (env.nodeEnv === 'development') {
   app.use(morgan('dev'));

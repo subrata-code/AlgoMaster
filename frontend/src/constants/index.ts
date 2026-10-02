@@ -16,6 +16,7 @@ export const ROUTES = {
   BOOKMARKS: '/bookmarks',
   PROFILE: '/profile',
   SETTINGS: '/settings',
+  ONBOARDING: '/onboarding',
   LOGIN: '/login',
   SIGNUP: '/signup',
   FORGOT_PASSWORD: '/forgot-password',

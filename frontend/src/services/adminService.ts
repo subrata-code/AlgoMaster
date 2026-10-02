@@ -1,6 +1,4 @@
-import { delay } from '@/lib/utils'
-import { adminStats } from '@/data'
-import { problems } from '@/data/problems'
+import { apiRequest } from '@/lib/api'
 import type { AdminStats, Problem, ProblemStatus } from '@/types'
 
 export interface CreateProblemInput {
@@ -20,50 +18,52 @@ export interface CreateProblemInput {
 
 export const adminService = {
   async getStats(): Promise<AdminStats> {
-    await delay()
-    return adminStats
+    const response = await apiRequest<AdminStats>('/admin/stats')
+    return response.data!
   },
 
   async getProblems(): Promise<Problem[]> {
-    await delay()
-    return [...problems].sort((a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt))
+    const response = await apiRequest<{ problems: Problem[] }>('/admin/problems')
+    return response.data?.problems ?? []
   },
 
   async getProblem(id: string): Promise<Problem | null> {
-    await delay()
-    return problems.find((p) => p.id === id) ?? null
-  },
-
-  async createProblem(input: CreateProblemInput): Promise<Problem> {
-    await delay(500)
-    const now = new Date().toISOString()
-    return {
-      id: String(Date.now()),
-      slug: input.name.toLowerCase().replace(/\s+/g, '-'),
-      isPremium: Boolean(input.solution || input.conceptVideoUrl),
-      isFeatured: false,
-      solvedCount: 0,
-      acceptanceRate: 0,
-      topics: input.tags.map((t) => t.toLowerCase().replace(/\s+/g, '-')),
-      createdAt: now,
-      updatedAt: now,
-      ...input,
+    try {
+      const response = await apiRequest<{ problem: Problem }>(`/admin/problems/${encodeURIComponent(id)}`)
+      return response.data?.problem ?? null
+    } catch {
+      return null
     }
   },
 
+  async createProblem(input: CreateProblemInput): Promise<Problem> {
+    const response = await apiRequest<{ problem: Problem }>('/problems', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    })
+    return response.data!.problem
+  },
+
   async updateProblem(id: string, input: Partial<CreateProblemInput>): Promise<Problem | null> {
-    await delay(500)
-    const existing = problems.find((p) => p.id === id)
-    if (!existing) return null
-    return {
-      ...existing,
-      ...input,
-      updatedAt: new Date().toISOString(),
+    try {
+      const response = await apiRequest<{ problem: Problem }>(`/problems/${encodeURIComponent(id)}`, {
+        method: 'PUT',
+        body: JSON.stringify(input),
+      })
+      return response.data?.problem ?? null
+    } catch {
+      return null
     }
   },
 
   async deleteProblem(id: string): Promise<{ success: boolean }> {
-    await delay(400)
-    return { success: problems.some((p) => p.id === id) }
+    try {
+      const response = await apiRequest<{ success: boolean }>(`/problems/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      })
+      return response.data ?? { success: false }
+    } catch {
+      return { success: false }
+    }
   },
 }

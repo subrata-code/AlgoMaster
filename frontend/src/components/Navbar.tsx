@@ -128,22 +128,20 @@ export function Navbar() {
         <motion.header
           initial={false}
           animate={{
-            width: isScrolled ? 680 : 1060,
-            paddingTop: isScrolled ? 6 : 10,
-            paddingBottom: isScrolled ? 6 : 10,
-            paddingLeft: isScrolled ? 14 : 24,
-            paddingRight: isScrolled ? 14 : 24,
-            borderRadius: isScrolled ? 9999 : 20,
-            y: isScrolled ? 0 : 4,
+            maxWidth: isScrolled ? 760 : 1060,
+            paddingTop: isScrolled ? 8 : 12,
+            paddingBottom: isScrolled ? 8 : 12,
+            paddingLeft: isScrolled ? 16 : 24,
+            paddingRight: isScrolled ? 16 : 24,
+            borderRadius: isScrolled ? 9999 : 24,
+            y: isScrolled ? 8 : 12,
           }}
           transition={{
-            type: 'spring',
-            stiffness: 280,
-            damping: 30,
-            mass: 0.8
+            duration: 0.3,
+            ease: [0.16, 1, 0.3, 1],
           }}
           className={cn(
-            'pointer-events-auto flex items-center justify-between max-w-[94vw] border backdrop-blur-2xl transition-colors duration-300',
+            'pointer-events-auto flex w-full max-w-[94vw] items-center justify-between border backdrop-blur-2xl transition-colors duration-300',
             isScrolled
               ? 'bg-[#0e0e16]/90 border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.6)]'
               : 'bg-[#12121c]/60 border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.35)]'

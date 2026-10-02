@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import env from '../config/env.js';
 import { HTTP_STATUS, ROLES } from '../constants/index.js';
 
@@ -47,4 +48,43 @@ const resolveRoleFromEmail = (email) => {
   return ROLES.USER;
 };
 
-export { AppError, asyncHandler, sendSuccess, resolveRoleFromEmail };
+const slugify = (text) =>
+  String(text || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id) && String(new mongoose.Types.ObjectId(id)) === String(id);
+
+const formatPagination = (page, pageSize, total) => {
+  const totalPages = Math.max(1, Math.ceil(total / pageSize) || 1);
+  return {
+    page,
+    pageSize,
+    total,
+    totalPages,
+    hasNext: page < totalPages,
+    hasPrev: page > 1,
+  };
+};
+
+const toId = (doc) => {
+  if (!doc) return doc;
+  const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
+  obj.id = obj._id ? String(obj._id) : obj.id;
+  delete obj.__v;
+  return obj;
+};
+
+export {
+  AppError,
+  asyncHandler,
+  sendSuccess,
+  resolveRoleFromEmail,
+  slugify,
+  isValidObjectId,
+  formatPagination,
+  toId,
+};

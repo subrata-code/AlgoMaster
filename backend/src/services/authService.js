@@ -20,9 +20,11 @@ export const signup = async ({ name, email, password }) => {
   const user = await User.create({
     name: name.trim(),
     email: normalizedEmail,
+    username: normalizedEmail.split('@')[0],
     password,
     role,
     provider: 'local',
+    onboarding: { completed: false, tourCompleted: false },
   });
 
   const token = signToken(user._id.toString());

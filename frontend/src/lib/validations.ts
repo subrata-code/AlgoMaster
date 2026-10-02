@@ -41,8 +41,17 @@ export const problemFormSchema = z.object({
   draft: z.boolean(),
 })
 
+export const profileSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  bio: z.string().max(400).optional(),
+  location: z.string().max(80).optional(),
+  github: z.string().max(80).optional(),
+  linkedin: z.string().max(80).optional(),
+})
+
 export type LoginFormValues = z.infer<typeof loginSchema>
 export type SignupFormValues = z.infer<typeof signupSchema>
 export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>
 export type NewsletterFormValues = z.infer<typeof newsletterSchema>
 export type ProblemFormValues = z.infer<typeof problemFormSchema>
+export type ProfileFormValues = z.infer<typeof profileSchema>

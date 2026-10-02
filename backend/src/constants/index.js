@@ -18,3 +18,10 @@ export const HTTP_STATUS = Object.freeze({
 });
 
 export const API_PREFIX = '/api';
+
+export const DIFFICULTIES = Object.freeze(['Easy', 'Medium', 'Hard']);
+export const PLATFORMS = Object.freeze(['LeetCode', 'GeeksforGeeks', 'Codeforces', 'HackerRank', 'AtCoder']);
+export const PROBLEM_STATUS = Object.freeze(['published', 'draft']);
+export const CONTENT_TYPES = Object.freeze(['topic', 'company', 'roadmap', 'testimonial', 'faq', 'journey', 'stats']);
+export const ACTIVITY_TYPES = Object.freeze(['solved', 'bookmarked', 'viewed', 'streak', 'achievement']);
+export const ONBOARDING_DIFFICULTIES = Object.freeze(['Beginner', 'Intermediate', 'Advanced']);

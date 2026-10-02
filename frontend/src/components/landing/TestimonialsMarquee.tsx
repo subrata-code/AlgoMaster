@@ -76,13 +76,13 @@ function MobileTestimonialsSlider({ testimonials }: { testimonials: Testimonial[
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="flex flex-col justify-between min-h-[140px]"
+            className="flex flex-col justify-between min-h-[220px] sm:min-h-[180px]"
           >
             <p className="text-sm leading-relaxed text-white/80 font-normal">
               &ldquo;{t.content}&rdquo;
             </p>
 
-            <div className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4">
+            <div className="mt-6 flex items-center gap-3 border-t border-white/10 pt-4">
               {t.avatar ? (
                 <img
                   src={t.avatar}
@@ -143,10 +143,11 @@ function MobileTestimonialsSlider({ testimonials }: { testimonials: Testimonial[
 }
 
 export function TestimonialsMarquee({ testimonials }: TestimonialsMarqueeProps) {
-  if (testimonials.length === 0) return null
+  // If testimonials are empty, we still render the section to debug visibility
+  const displayTestimonials = testimonials.length > 0 ? testimonials : []
 
   // Map testimonials to InfiniteSpiral items for desktop
-  const spiralItems: InfiniteSpiralItem[] = testimonials.map((t, index) => ({
+  const spiralItems: InfiniteSpiralItem[] = displayTestimonials.map((t, index) => ({
     id: `testim-${t.id || index}`,
     content: <TestimonialCard t={t} />,
     alt: t.name,
@@ -221,7 +222,7 @@ export function TestimonialsMarquee({ testimonials }: TestimonialsMarqueeProps) 
 
           {/* ─── Mobile / Tablet: Responsive Familiar Testimonials Slider ─── */}
           <div className="block lg:hidden w-full">
-            <MobileTestimonialsSlider testimonials={testimonials} />
+            <MobileTestimonialsSlider testimonials={displayTestimonials} />
           </div>
         </div>
       </div>

@@ -25,9 +25,14 @@ interface RawBackendUser {
   avatar?: string
   createdAt?: string
   joinedAt?: string
+  onboarding?: {
+    completed?: boolean
+    tourCompleted?: boolean
+    difficultyPreference?: 'Beginner' | 'Intermediate' | 'Advanced'
+  }
 }
 
-function normalizeUser(user: RawBackendUser): User {
+export function normalizeUser(user: RawBackendUser): User {
   return {
     id: user._id ?? user.id ?? user.email,
     name: user.name,
@@ -40,6 +45,9 @@ function normalizeUser(user: RawBackendUser): User {
     location: user.location,
     github: user.github,
     linkedin: user.linkedin,
+    onboardingCompleted: user.onboarding?.completed,
+    tourCompleted: user.onboarding?.tourCompleted,
+    difficultyPreference: user.onboarding?.difficultyPreference,
   }
 }
 
