@@ -297,67 +297,140 @@ export function Navbar() {
       </div>
 
       {/* ─── Mobile Navbar ─── */}
-      <header className="fixed top-3 left-4 right-4 z-50 flex md:hidden items-center justify-between rounded-2xl border border-white/10 bg-[#0e0e16]/80 p-2 backdrop-blur-xl shadow-lg">
-        <Link to={ROUTES.HOME} className="flex items-center gap-2 pl-1 font-semibold text-white">
-          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-tr from-[#2563eb] to-[#60a5fa] text-[10px] font-bold text-white">
+      <header
+        className={cn(
+          'fixed top-3 inset-x-3 sm:inset-x-5 z-50 flex md:hidden items-center justify-between rounded-2xl border bg-[#0e0e16]/85 p-2 backdrop-blur-xl shadow-lg transition-colors duration-200',
+          open ? 'border-[#327CF6]/40 shadow-[0_8px_30px_rgba(50,124,246,0.15)]' : 'border-white/10'
+        )}
+      >
+        <Link
+          to={ROUTES.HOME}
+          onClick={() => setOpen(false)}
+          className="flex items-center gap-2 pl-1 font-semibold text-white"
+        >
+          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-tr from-[#2563eb] to-[#60a5fa] text-[10px] font-bold text-white shadow-sm shadow-blue-500/30">
             A
           </span>
-          <span className="text-xs">{APP_NAME}</span>
+          <span className="text-xs tracking-tight">{APP_NAME}</span>
         </Link>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <ThemeToggle />
           <button
-            className="floating-navbar-link !px-2 !py-1.5"
+            className="floating-navbar-link !px-2.5 !py-1.5 active:scale-95 transition-transform"
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
-            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={open ? 'close' : 'menu'}
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                {open ? <X className="h-4 w-4 text-white" /> : <Menu className="h-4 w-4 text-white/80" />}
+              </motion.div>
+            </AnimatePresence>
           </button>
         </div>
       </header>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Dropdown Menu */}
       <AnimatePresence>
         {open && (
-          <div
-            className="fixed inset-0 z-[49] bg-black/60 backdrop-blur-sm md:hidden"
-            onClick={() => setOpen(false)}
-          >
-            <motion.nav
-              initial={{ opacity: 0, y: -16, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -16, scale: 0.95 }}
+          <>
+            {/* Backdrop Blur */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="absolute left-4 right-4 top-16 rounded-2xl border border-white/10 bg-[#0e0e16]/95 p-4 backdrop-blur-2xl shadow-2xl"
-              aria-label="Mobile"
+              className="fixed inset-0 z-40 bg-black/65 backdrop-blur-md md:hidden"
+              onClick={() => setOpen(false)}
+            />
+
+            {/* Dropdown Card */}
+            <motion.nav
+              initial={{ opacity: 0, y: -16, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -14, scale: 0.98 }}
+              transition={{
+                type: 'spring',
+                damping: 25,
+                stiffness: 300,
+                mass: 0.8
+              }}
+              className="fixed top-[4.25rem] inset-x-3 sm:inset-x-5 z-50 rounded-2xl border border-white/15 bg-[#0b0b14]/95 p-3.5 backdrop-blur-2xl shadow-[0_24px_50px_rgba(0,0,0,0.85)] max-h-[calc(100vh-5.5rem)] overflow-y-auto md:hidden"
+              aria-label="Mobile Navigation"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex flex-col gap-1">
-                {/* Dashboard */}
-                <NavLink
-                  to={ROUTES.DASHBOARD}
-                  onClick={() => setOpen(false)}
-                  className={({ isActive }) =>
-                    cn(
-                      'flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white',
-                      isActive && 'bg-white/10 text-white'
-                    )
-                  }
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  visible: { transition: { staggerChildren: 0.04 } },
+                  hidden: {}
+                }}
+                className="flex flex-col gap-2.5"
+              >
+                {/* 1. Dashboard Highlight Card */}
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0, y: 8 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.2 } }
+                  }}
                 >
-                  <LayoutDashboard className="h-4 w-4" />
-                  Dashboard
-                </NavLink>
+                  <NavLink
+                    to={ROUTES.DASHBOARD}
+                    onClick={() => setOpen(false)}
+                    className={({ isActive }) =>
+                      cn(
+                        'flex items-center justify-between p-3 rounded-xl border transition-all group',
+                        isActive
+                          ? 'bg-blue-500/15 border-blue-500/30'
+                          : 'bg-white/[0.04] border-white/10 hover:bg-white/[0.08]'
+                      )
+                    }
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 border border-blue-500/30 text-[#60A5FA]">
+                        <LayoutDashboard className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold text-white flex items-center gap-1.5">
+                          Dashboard
+                        </div>
+                        <div className="text-[11px] text-white/50">Your practice stats, streak & progress</div>
+                      </div>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-white/30 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                  </NavLink>
+                </motion.div>
 
-                {/* Explore Section */}
-                <div className="pt-2 pb-1 px-3">
+                {/* 2. Explore Section Title */}
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0, y: 8 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.2 } }
+                  }}
+                  className="flex items-center justify-between px-1 pt-1"
+                >
                   <span className="text-[11px] font-semibold uppercase tracking-wider text-white/40">
-                    Explore
+                    Explore Tracks
                   </span>
-                </div>
+                  <span className="text-[10px] text-white/30 font-mono">4 TRACKS</span>
+                </motion.div>
 
-                <div className="grid grid-cols-1 gap-1 pl-2">
+                {/* Explore Grid */}
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0, y: 8 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.2 } }
+                  }}
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-2"
+                >
                   {EXPLORE_ITEMS.map((item) => (
                     <NavLink
                       key={item.title}
@@ -365,75 +438,123 @@ export function Navbar() {
                       onClick={() => setOpen(false)}
                       className={({ isActive }) =>
                         cn(
-                          'flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white',
-                          isActive && 'bg-white/10 text-white'
+                          'flex items-start gap-2.5 p-2.5 rounded-xl border transition-all group',
+                          isActive
+                            ? 'bg-white/10 border-white/20'
+                            : 'bg-white/[0.03] border-white/8 hover:bg-white/[0.07] hover:border-white/15'
                         )
                       }
                     >
-                      <item.icon className={cn('h-4 w-4', item.color)} />
-                      <span>{item.title}</span>
+                      <div
+                        className={cn(
+                          'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border mt-0.5',
+                          item.bgColor
+                        )}
+                      >
+                        <item.icon className={cn('h-3.5 w-3.5', item.color)} />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold text-white/90 group-hover:text-white">
+                            {item.title}
+                          </span>
+                          {item.badge && (
+                            <span className="rounded-full bg-amber-500/20 border border-amber-500/30 px-1.5 py-0.5 text-[9px] font-semibold text-amber-300">
+                              {item.badge}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-white/45 line-clamp-1 mt-0.5 leading-normal">
+                          {item.desc}
+                        </p>
+                      </div>
                     </NavLink>
                   ))}
-                </div>
+                </motion.div>
 
-                {/* About our goal */}
-                <NavLink
-                  to={ROUTES.ABOUT}
-                  onClick={() => setOpen(false)}
-                  className={({ isActive }) =>
-                    cn(
-                      'flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white mt-1 border-t border-white/5 pt-2.5',
-                      isActive && 'bg-white/10 text-white'
-                    )
-                  }
+                {/* 3. About our goal */}
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0, y: 8 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.2 } }
+                  }}
+                  className="pt-1"
                 >
-                  <Sparkles className="h-4 w-4 text-[#327CF6]" />
-                  About our goal
-                </NavLink>
-              </div>
+                  <NavLink
+                    to={ROUTES.ABOUT}
+                    onClick={() => setOpen(false)}
+                    className={({ isActive }) =>
+                      cn(
+                        'flex items-center justify-between p-3 rounded-xl border transition-all group',
+                        isActive
+                          ? 'bg-white/10 border-white/20'
+                          : 'bg-white/[0.03] border-white/8 hover:bg-white/[0.07]'
+                      )
+                    }
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#327CF6]/15 border border-[#327CF6]/25 text-[#60A5FA]">
+                        <Sparkles className="h-3.5 w-3.5" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-semibold text-white">About our goal</div>
+                        <div className="text-[10px] text-white/45">Our mission, philosophy & story</div>
+                      </div>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-white/30 group-hover:text-white transition-colors" />
+                  </NavLink>
+                </motion.div>
 
-              {/* Mobile Auth CTAs */}
-              <div className="mt-4 flex gap-2 border-t border-white/10 pt-3">
-                {user ? (
-                  <>
-                    <Link
-                      to={ROUTES.PROFILE}
-                      onClick={() => setOpen(false)}
-                      className="flex-1 rounded-xl border border-white/10 py-2 text-center text-sm font-medium text-white"
-                    >
-                      Profile
-                    </Link>
-                    <button
-                      className="flex-1 rounded-xl bg-white/10 py-2 text-center text-sm font-medium text-white"
-                      onClick={() => {
-                        setOpen(false)
-                        void handleLogout()
-                      }}
-                    >
-                      Log out
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      to={ROUTES.LOGIN}
-                      onClick={() => setOpen(false)}
-                      className="flex-1 rounded-xl border border-white/10 py-2 text-center text-sm font-medium text-white"
-                    >
-                      Log in
-                    </Link>
-                    <Link
-                      to={ROUTES.SIGNUP}
-                      onClick={() => setOpen(false)}
-                      className="flex-1 rounded-xl bg-[#327CF6] py-2 text-center text-sm font-medium text-white"
-                    >
-                      Sign up
-                    </Link>
-                  </>
-                )}
-              </div>
+                {/* 4. Auth Buttons */}
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0, y: 8 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.2 } }
+                  }}
+                  className="mt-2 pt-3 border-t border-white/10 flex gap-2.5"
+                >
+                  {user ? (
+                    <>
+                      <Link
+                        to={ROUTES.PROFILE}
+                        onClick={() => setOpen(false)}
+                        className="flex-1 rounded-xl border border-white/15 bg-white/5 py-2.5 text-center text-xs font-medium text-white hover:bg-white/10 transition-colors"
+                      >
+                        Profile
+                      </Link>
+                      <button
+                        className="flex-1 rounded-xl bg-red-500/15 border border-red-500/20 py-2.5 text-center text-xs font-medium text-red-300 hover:bg-red-500/25 transition-colors"
+                        onClick={() => {
+                          setOpen(false)
+                          void handleLogout()
+                        }}
+                      >
+                        Log out
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        to={ROUTES.LOGIN}
+                        onClick={() => setOpen(false)}
+                        className="flex-1 rounded-xl border border-white/15 bg-white/5 py-2.5 text-center text-xs font-medium text-white hover:bg-white/10 transition-colors"
+                      >
+                        Log in
+                      </Link>
+                      <Link
+                        to={ROUTES.SIGNUP}
+                        onClick={() => setOpen(false)}
+                        className="flex-1 rounded-xl bg-gradient-to-r from-[#2563eb] to-[#3b82f6] py-2.5 text-center text-xs font-semibold text-white shadow-md shadow-blue-500/30 hover:opacity-95 transition-opacity flex items-center justify-center gap-1"
+                      >
+                        Sign up
+                        <ChevronRight className="h-3.5 w-3.5" />
+                      </Link>
+                    </>
+                  )}
+                </motion.div>
+              </motion.div>
             </motion.nav>
-          </div>
+          </>
         )}
       </AnimatePresence>
     </>
