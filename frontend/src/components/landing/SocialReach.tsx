@@ -73,13 +73,13 @@ export function SocialReach({ stats }: SocialReachProps) {
   return (
     <section className="relative py-20 sm:py-28 overflow-hidden" aria-labelledby="social-heading">
       <div className="container-page relative z-10">
-        <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
-          {/* ─── Left: Social Cards ─── */}
+        <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+          {/* ─── Left: Laptop Mockup with Instagram Reel ─── */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -30, rotate: -2 }}
+            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
             viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="relative"
           >
             {/* Decorative X lines */}
@@ -88,37 +88,35 @@ export function SocialReach({ stats }: SocialReachProps) {
               <span className="reach-x-bar reach-x-bar-b" />
             </div>
 
-            {/* Glow behind cards */}
-            <div className="absolute left-1/2 top-1/2 -z-10 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#327CF6]/20 blur-[120px]" aria-hidden="true" />
+            {/* Glow behind laptop */}
+            <div className="absolute left-1/2 top-1/2 -z-10 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#EC4899]/15 blur-[120px]" aria-hidden="true" />
 
-            <div className="relative z-10 flex flex-col gap-4">
-              {socialLinks.map((social, i) => (
-                <motion.a
-                  key={social.platform}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className={`social-card ${social.cardClass}`}
-                  aria-label={`${social.label}: ${social.stat} ${social.statLabel}`}
-                >
-                  <social.icon className="h-5 w-5 shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold">
-                      {social.stat} <span className="font-normal text-white/50 dark:text-white/50">{social.statLabel}</span>
-                    </p>
-                    <p className="text-xs text-white/40 dark:text-white/40">{social.handle}</p>
+            {/* CSS Phone Mockup */}
+            <div className="phone-mockup">
+              <div className="phone-bezel">
+                <div className="phone-notch">
+                  <div className="phone-speaker" />
+                  <div className="phone-camera" />
+                </div>
+                <div className="phone-screen">
+                  <div className="ig-iframe-wrapper">
+                    <iframe
+                      src="https://www.instagram.com/reel/DZF-Kt0iuDM/embed/"
+                      scrolling="no"
+                      allowTransparency={true}
+                      allow="encrypted-media"
+                      loading="lazy"
+                      title="Instagram Reel"
+                    />
                   </div>
-                  <ArrowRight className="h-4 w-4 text-white/30 transition-transform group-hover:translate-x-1" />
-                </motion.a>
-              ))}
+                </div>
+                <div className="phone-buttons-left" />
+                <div className="phone-buttons-right" />
+              </div>
             </div>
           </motion.div>
 
-          {/* ─── Right: Text + CTA ─── */}
+          {/* ─── Right: Text + Social Cards Row + CTA ─── */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -143,7 +141,34 @@ export function SocialReach({ stats }: SocialReachProps) {
               interviews.
             </p>
 
-            <div className="mt-8">
+            {/* Compact Horizontal Social Cards */}
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              {socialLinks.map((social, i) => (
+                <motion.a
+                  key={social.platform}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
+                  className={`social-card !p-3 ${social.cardClass} ${social.platform === 'instagram' ? 'sm:col-span-2' : ''}`}
+                  aria-label={`${social.label}: ${social.stat} ${social.statLabel}`}
+                >
+                  <social.icon className="h-5 w-5 shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold">
+                      {social.stat} <span className="font-normal text-white/50 dark:text-white/50">{social.statLabel}</span>
+                    </p>
+                    <p className="text-xs text-white/40 dark:text-white/40">{social.handle}</p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-white/30 transition-transform group-hover:translate-x-1" />
+                </motion.a>
+              ))}
+            </div>
+
+            <div className="mt-8 pt-4 border-t border-white/10 dark:border-white/10">
               <Link
                 to={ROUTES.ABOUT}
                 className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-transparent px-5 py-2.5 text-sm font-medium text-white/80 transition-all hover:border-white/25 hover:bg-white/5 hover:text-white"
