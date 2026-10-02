@@ -1,7 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { ArrowLeft, BookOpen, Briefcase, Check, GraduationCap, Link2, Pencil, Save, UserCircle, X } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { BookOpen, Briefcase, Check, GraduationCap, Link2, Pencil, Save, UserCircle, X } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -12,7 +10,6 @@ import { PageHeader } from '@/components/PageHeader'
 import { useAuth } from '@/context/AuthContext'
 import { userService } from '@/services'
 import { toast } from '@/hooks/use-toast'
-import { ROUTES } from '@/constants'
 import { formatDate } from '@/lib/utils'
 import type { User } from '@/types'
 
@@ -146,7 +143,7 @@ function SectionProgressBar({ percent }: { percent: number }) {
 
 /* ─── Main ProfilePage ─── */
 export default function ProfilePage() {
-  const { user: authUser, refreshSession } = useAuth()
+  const { refreshSession } = useAuth()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [editingSection, setEditingSection] = useState<string | null>(null)
