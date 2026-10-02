@@ -1,0 +1,6 @@
+export { AmbientBlobs } from './AmbientBlobs'
+export { LandingHero } from './LandingHero'
+export { SocialReach } from './SocialReach'
+export { PlatformOverview } from './PlatformOverview'
+export { TestimonialsMarquee } from './TestimonialsMarquee'
+export { FAQSection } from './FAQSection'
