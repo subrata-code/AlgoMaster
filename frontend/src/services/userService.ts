@@ -24,6 +24,23 @@ export const userService = {
     })
     return response.data!.user
   },
+
+  async updateOnboarding(data: { completed: boolean; difficultyPreference: string; tourCompleted: boolean }): Promise<User> {
+    const response = await apiRequest<{ user: User }>('/users/me/onboarding', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    })
+    return response.data!.user
+  },
+
+  async getSuggestedProblem(): Promise<{ id: string; slug: string } | null> {
+    try {
+      const response = await apiRequest<{ problem: { id: string; slug: string } }>('/users/me/suggested-problem')
+      return response.data?.problem ?? null
+    } catch {
+      return null
+    }
+  },
 }
 
 export const dashboardService = {

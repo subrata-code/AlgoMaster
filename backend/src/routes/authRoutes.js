@@ -7,11 +7,16 @@ import {
   loginValidator,
   forgotPasswordValidator,
   resetPasswordValidator,
+  verifyEmailValidator,
+  googleLoginValidator,
 } from '../validators/authValidators.js';
 
 const router = Router();
 
 router.post('/signup', signupValidator, validate, authController.signup);
+router.post('/verify-email', verifyEmailValidator, validate, authController.verifyEmail);
+router.post('/resend-verification', forgotPasswordValidator, validate, authController.resendVerificationEmail);
+router.post('/google', googleLoginValidator, validate, authController.googleLogin);
 router.post('/login', loginValidator, validate, authController.login);
 router.post('/logout', authController.logout);
 router.get('/me', protect, authController.me);

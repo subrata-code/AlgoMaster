@@ -23,12 +23,45 @@ const clearAuthCookie = (res) => {
 };
 
 export const signup = asyncHandler(async (req, res) => {
-  const { user, token } = await authService.signup(req.body);
-  setAuthCookie(res, token);
+  const result = await authService.signup(req.body);
+  
+  if (result.requiresVerification) {
+    return sendSuccess(res, {
+      statusCode: HTTP_STATUS.CREATED,
+      message: 'Account created. Please verify your email.',
+      data: result,
+    });
+  }
 
+  setAuthCookie(res, result.token);
   sendSuccess(res, {
     statusCode: HTTP_STATUS.CREATED,
     message: 'Account created successfully',
+    data: result,
+  });
+});
+
+export const verifyEmail = asyncHandler(async (req, res) => {
+  const { user, token } = await authService.verifyEmail(req.body);
+  setAuthCookie(res, token);
+  sendSuccess(res, {
+    message: 'Email verified successfully',
+    data: { user, token },
+  });
+});
+
+export const resendVerificationEmail = asyncHandler(async (req, res) => {
+  const result = await authService.resendVerificationEmail(req.body);
+  sendSuccess(res, {
+    message: result.message,
+  });
+});
+
+export const googleLogin = asyncHandler(async (req, res) => {
+  const { user, token } = await authService.googleLogin(req.body.accessToken);
+  setAuthCookie(res, token);
+  sendSuccess(res, {
+    message: 'Logged in with Google successfully',
     data: { user, token },
   });
 });

@@ -7,7 +7,10 @@ interface AuthContextValue {
   user: User | null
   loading: boolean
   login: (credentials: AuthCredentials) => Promise<{ user: User; token: string }>
-  signup: (data: SignupData) => Promise<{ user: User; token: string }>
+  signup: (data: SignupData) => Promise<{ user?: User; token?: string; requiresVerification?: boolean }>
+  googleLogin: (accessToken: string) => Promise<{ user: User; token: string }>
+  verifyEmail: (email: string, otp: string) => Promise<{ user: User; token: string }>
+  resendVerification: (email: string) => Promise<void>
   forgotPassword: (email: string) => Promise<{ message: string }>
   resetPassword: (token: string, password: string) => Promise<{ user: User; token: string }>
   logout: () => Promise<void>
@@ -58,8 +61,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signup = useCallback(async (data: SignupData) => {
     const response = await authService.signup(data)
+    if (response.user && response.token) {
+      setUser(response.user)
+    }
+    return response
+  }, [])
+
+  const googleLogin = useCallback(async (accessToken: string) => {
+    const response = await authService.googleLogin(accessToken)
     setUser(response.user)
     return response
+  }, [])
+
+  const verifyEmail = useCallback(async (email: string, otp: string) => {
+    const response = await authService.verifyEmail(email, otp)
+    setUser(response.user)
+    return response
+  }, [])
+
+  const resendVerification = useCallback(async (email: string) => {
+    return authService.resendVerification(email)
   }, [])
 
   const forgotPassword = useCallback(async (email: string) => {
@@ -83,12 +104,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       login,
       signup,
+      googleLogin,
+      verifyEmail,
+      resendVerification,
       forgotPassword,
       resetPassword,
       logout,
       refreshSession,
     }),
-    [loading, login, logout, refreshSession, resetPassword, signup, forgotPassword, user],
+    [loading, login, logout, refreshSession, resetPassword, signup, googleLogin, verifyEmail, resendVerification, forgotPassword, user],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

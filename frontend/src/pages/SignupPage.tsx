@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
@@ -14,7 +15,11 @@ import { toast } from '@/hooks/use-toast'
 
 export default function SignupPage() {
   const navigate = useNavigate()
-  const { signup } = useAuth()
+  const { signup, verifyEmail, resendVerification } = useAuth()
+  const [needsOtp, setNeedsOtp] = useState(false)
+  const [registeredEmail, setRegisteredEmail] = useState('')
+  const [otp, setOtp] = useState('')
+  const [isVerifying, setIsVerifying] = useState(false)
   const {
     register,
     handleSubmit,
@@ -26,19 +31,77 @@ export default function SignupPage() {
 
   const onSubmit = handleSubmit(async (values) => {
     try {
-      await signup(values)
-      toast({ title: 'Account created', description: 'Your account is ready.' })
-      void navigate(ROUTES.DASHBOARD)
+      const response = await signup(values)
+      if (response.requiresVerification) {
+        setRegisteredEmail(values.email)
+        setNeedsOtp(true)
+        toast({ title: 'Verification email sent', description: 'Please check your inbox.' })
+      } else {
+        toast({ title: 'Account created', description: 'Your account is ready.' })
+        void navigate(ROUTES.DASHBOARD)
+      }
     } catch (error) {
       toast({ title: 'Signup failed', description: error instanceof Error ? error.message : 'Unable to create account.' })
     }
   })
 
-  const handleSocialAuth = (provider: 'Google' | 'GitHub' | 'LinkedIn') => {
-    toast({
-      title: `${provider} auth is not configured yet`,
-      description: 'Enable the backend OAuth provider first, then wire it to this button.',
-    })
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!otp) return
+    setIsVerifying(true)
+    try {
+      await verifyEmail(registeredEmail, otp)
+      toast({ title: 'Email verified', description: 'Your account is now active.' })
+      void navigate(ROUTES.DASHBOARD)
+    } catch (error) {
+      toast({ title: 'Verification failed', description: error instanceof Error ? error.message : 'Invalid OTP.' })
+    } finally {
+      setIsVerifying(false)
+    }
+  }
+
+  const handleResendOtp = async () => {
+    try {
+      await resendVerification(registeredEmail)
+      toast({ title: 'OTP Resent', description: 'A new verification code has been sent.' })
+    } catch (error) {
+      toast({ title: 'Failed to resend', description: error instanceof Error ? error.message : 'Unable to resend OTP.' })
+    }
+  }
+
+  if (needsOtp) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Verify your email</CardTitle>
+          <CardDescription>We sent a 6-digit verification code to {registeredEmail}.</CardDescription>
+        </CardHeader>
+        <form onSubmit={handleVerify}>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="otp">Verification Code</Label>
+              <Input
+                id="otp"
+                type="text"
+                placeholder="123456"
+                maxLength={6}
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                required
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-3">
+            <Button type="submit" className="w-full" disabled={isVerifying}>
+              {isVerifying ? 'Verifying...' : 'Verify Email'}
+            </Button>
+            <Button type="button" variant="link" className="w-full" onClick={handleResendOtp}>
+              Resend verification code
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
+    )
   }
 
   return (
@@ -49,7 +112,7 @@ export default function SignupPage() {
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="space-y-4">
-          <SocialAuthButtons onSelect={handleSocialAuth} />
+          <SocialAuthButtons />
 
           <div className="flex items-center gap-3">
             <Separator className="flex-1" />

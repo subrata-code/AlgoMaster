@@ -70,8 +70,25 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      required: [
+        function () {
+          return this.provider === 'local';
+        },
+        'Password is required',
+      ],
       minlength: [8, 'Password must be at least 8 characters'],
+      select: false,
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerificationToken: {
+      type: String,
+      select: false,
+    },
+    emailVerificationExpires: {
+      type: Date,
       select: false,
     },
     profileImage: {
@@ -159,7 +176,7 @@ userSchema.pre('save', async function hashPassword() {
     this.username = this.email.split('@')[0];
   }
 
-  if (!this.isModified('password')) {
+  if (!this.isModified('password') || !this.password) {
     return;
   }
 

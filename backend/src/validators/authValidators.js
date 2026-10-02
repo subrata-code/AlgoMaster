@@ -24,6 +24,15 @@ export const forgotPasswordValidator = [
   body('email').trim().notEmpty().withMessage('Email is required').isEmail().withMessage('Enter a valid email').normalizeEmail(),
 ];
 
+export const verifyEmailValidator = [
+  body('email').trim().notEmpty().withMessage('Email is required').isEmail().withMessage('Enter a valid email').normalizeEmail(),
+  body('otp').notEmpty().withMessage('OTP is required'),
+];
+
+export const googleLoginValidator = [
+  body('accessToken').notEmpty().withMessage('Access Token is required'),
+];
+
 export const resetPasswordValidator = [
   body('token').notEmpty().withMessage('Reset token is required'),
   body('password')

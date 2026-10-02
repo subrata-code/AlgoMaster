@@ -64,12 +64,45 @@ export const authService = {
     }
   },
 
-  async signup(data: SignupData): Promise<{ user: User; token: string }> {
-    const response = await apiRequest<{ user: RawBackendUser; token: string }>('/auth/signup', {
+  async signup(data: SignupData): Promise<{ user?: User; token?: string; requiresVerification?: boolean }> {
+    const response = await apiRequest<{ user: RawBackendUser; token?: string; requiresVerification?: boolean }>('/auth/signup', {
       method: 'POST',
       body: JSON.stringify(data),
     })
 
+    if (response.data!.requiresVerification) {
+      return { requiresVerification: true, user: normalizeUser(response.data!.user) }
+    }
+
+    return {
+      user: normalizeUser(response.data!.user),
+      token: response.data!.token,
+    }
+  },
+
+  async verifyEmail(email: string, otp: string): Promise<{ user: User; token: string }> {
+    const response = await apiRequest<{ user: RawBackendUser; token: string }>('/auth/verify-email', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp }),
+    })
+    return {
+      user: normalizeUser(response.data!.user),
+      token: response.data!.token,
+    }
+  },
+
+  async resendVerification(email: string): Promise<void> {
+    await apiRequest('/auth/resend-verification', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    })
+  },
+
+  async googleLogin(accessToken: string): Promise<{ user: User; token: string }> {
+    const response = await apiRequest<{ user: RawBackendUser; token: string }>('/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ accessToken }),
+    })
     return {
       user: normalizeUser(response.data!.user),
       token: response.data!.token,

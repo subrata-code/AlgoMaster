@@ -1,9 +1,14 @@
 import { Button } from '@/components/ui/button'
+import { useGoogleLogin } from '@react-oauth/google'
+import { useAuth } from '@/context/AuthContext'
+import { toast } from '@/hooks/use-toast'
+import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '@/constants'
 
 export type SocialProvider = 'Google' | 'GitHub' | 'LinkedIn'
 
 interface SocialAuthButtonsProps {
-  onSelect: (provider: SocialProvider) => void
+  onSelect?: (provider: SocialProvider) => void
 }
 
 function SocialIcon({ provider }: { provider: SocialProvider }) {
@@ -55,6 +60,32 @@ export function SocialAuthButtons({ onSelect }: SocialAuthButtonsProps) {
     LinkedIn: 'border-[#0a66c2]/30 bg-[#0a66c2]/5 text-[#0a66c2] hover:bg-[#0a66c2]/10',
   }
 
+  const { googleLogin } = useAuth()
+  const navigate = useNavigate()
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        await googleLogin(tokenResponse.access_token)
+        toast({ title: 'Success', description: 'Logged in with Google' })
+        void navigate(ROUTES.DASHBOARD)
+      } catch (error) {
+        toast({ title: 'Login failed', description: error instanceof Error ? error.message : 'Unable to sign in with Google.' })
+      }
+    },
+    onError: () => toast({ title: 'Google Auth Error', description: 'Failed to authenticate with Google.' })
+  })
+
+  const handleProviderClick = (provider: SocialProvider) => {
+    if (provider === 'Google') {
+      loginWithGoogle()
+    } else if (onSelect) {
+      onSelect(provider)
+    } else {
+      toast({ title: 'Not configured', description: `${provider} is not configured yet.` })
+    }
+  }
+
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
       {providers.map((provider) => (
@@ -63,7 +94,7 @@ export function SocialAuthButtons({ onSelect }: SocialAuthButtonsProps) {
           type="button"
           variant="outline"
           className={`w-full justify-center gap-2 rounded-xl border ${providerStyles[provider]}`}
-          onClick={() => onSelect(provider)}
+          onClick={() => handleProviderClick(provider)}
         >
           <SocialIcon provider={provider} />
           {provider}

@@ -34,13 +34,6 @@ export default function LoginPage() {
     }
   })
 
-  const handleSocialAuth = (provider: 'Google' | 'GitHub' | 'LinkedIn') => {
-    toast({
-      title: `${provider} auth is not configured yet`,
-      description: 'Enable the backend OAuth provider first, then wire it to this button.',
-    })
-  }
-
   return (
     <Card>
       <CardHeader>
@@ -49,7 +42,7 @@ export default function LoginPage() {
       </CardHeader>
       <form onSubmit={onSubmit}>
         <CardContent className="space-y-4">
-          <SocialAuthButtons onSelect={handleSocialAuth} />
+          <SocialAuthButtons />
 
           <div className="flex items-center gap-3">
             <Separator className="flex-1" />
