@@ -18,8 +18,8 @@ const env = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   adminEmail: (process.env.ADMIN_EMAIL || '').toLowerCase().trim(),
   adminPassword: process.env.ADMIN_PASSWORD || 'Admin1234!',
-  clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
-  adminUrl: process.env.ADMIN_URL || 'http://localhost:5174',
+  clientUrl: (process.env.CLIENT_URL || 'http://localhost:5173').trim().replace(/\/$/, ''),
+  adminUrl: (process.env.ADMIN_URL || 'http://localhost:5174').trim().replace(/\/$/, ''),
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
     apiKey: process.env.CLOUDINARY_API_KEY || '',
