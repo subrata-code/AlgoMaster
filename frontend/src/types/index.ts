@@ -57,6 +57,14 @@ export interface User {
   location?: string
   github?: string
   linkedin?: string
+  phone?: string
+  college?: string
+  degree?: string
+  graduationYear?: string
+  skills?: string[]
+  targetCompanyType?: string
+  targetRole?: string
+  portfolio?: string
   onboardingCompleted?: boolean
   tourCompleted?: boolean
   difficultyPreference?: 'Beginner' | 'Intermediate' | 'Advanced'

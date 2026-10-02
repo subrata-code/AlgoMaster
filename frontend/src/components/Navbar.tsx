@@ -7,10 +7,13 @@ import {
   Compass,
   Flame,
   LayoutDashboard,
+  LogOut,
   Menu,
   Moon,
+  Settings,
   Sparkles,
   Sun,
+  User,
   X
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
@@ -75,7 +78,9 @@ export function Navbar() {
   const [open, setOpen] = useState(false)
   const [exploreHovered, setExploreHovered] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
   const closeTimeoutRef = useRef<number | null>(null)
+  const profileRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   const { user, logout } = useAuth()
 
@@ -102,9 +107,23 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Close profile dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false)
+      }
+    }
+    if (profileOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [profileOpen])
+
   const handleLogout = async () => {
+    setProfileOpen(false)
     await logout()
-    void navigate(ROUTES.LOGIN)
+    void navigate(ROUTES.HOME)
   }
 
   const handleMouseEnter = () => {
@@ -270,16 +289,63 @@ export function Navbar() {
             <ThemeToggle />
 
             {user ? (
-              <div className="flex items-center gap-1.5">
-                <NavLink to={ROUTES.PROFILE} className="floating-navbar-link !py-1.5 !px-3">
-                  Profile
-                </NavLink>
+              <div className="relative" ref={profileRef}>
                 <button
-                  onClick={handleLogout}
-                  className="floating-navbar-cta !py-1.5 !px-3 !text-xs !bg-white/10 hover:!bg-white/15 !text-white"
+                  onClick={() => setProfileOpen((v) => !v)}
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-gradient-to-br from-[#2563eb] to-[#7c3aed] text-[11px] font-bold text-white shadow-md shadow-blue-500/20 transition-all hover:scale-105 hover:shadow-lg hover:shadow-blue-500/30"
+                  aria-label="User menu"
+                  aria-expanded={profileOpen}
                 >
-                  Log out
+                  {user.avatar ? (
+                    <img src={user.avatar} alt={user.name} className="h-full w-full rounded-full object-cover" />
+                  ) : (
+                    user.name?.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+                  )}
                 </button>
+
+                <AnimatePresence>
+                  {profileOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute right-0 top-full mt-2 w-56 rounded-xl border border-white/15 bg-[#0e0e16]/95 p-1.5 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] z-50"
+                    >
+                      {/* User info header */}
+                      <div className="px-3 py-2.5 border-b border-white/10 mb-1">
+                        <p className="text-sm font-semibold text-white truncate">{user.name}</p>
+                        <p className="text-[11px] text-white/50 truncate">{user.email}</p>
+                      </div>
+
+                      {[
+                        { label: 'Dashboard', icon: LayoutDashboard, href: ROUTES.DASHBOARD },
+                        { label: 'Profile', icon: User, href: ROUTES.PROFILE },
+                        { label: 'Settings', icon: Settings, href: ROUTES.SETTINGS },
+                      ].map((item) => (
+                        <Link
+                          key={item.label}
+                          to={item.href}
+                          onClick={() => setProfileOpen(false)}
+                          className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-white/70 transition-all hover:bg-white/[0.08] hover:text-white"
+                        >
+                          <item.icon className="h-3.5 w-3.5" />
+                          {item.label}
+                        </Link>
+                      ))}
+
+                      <div className="border-t border-white/10 mt-1 pt-1">
+                        <button
+                          onClick={handleLogout}
+                          className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-red-400/80 transition-all hover:bg-red-500/10 hover:text-red-400"
+                        >
+                          <LogOut className="h-3.5 w-3.5" />
+                          Log out
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               <Link

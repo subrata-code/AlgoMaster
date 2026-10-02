@@ -115,6 +115,45 @@ const userSchema = new mongoose.Schema(
       default: '',
       maxlength: [80, 'LinkedIn handle cannot exceed 80 characters'],
     },
+    phone: {
+      type: String,
+      default: '',
+      maxlength: [20, 'Phone number cannot exceed 20 characters'],
+    },
+    college: {
+      type: String,
+      default: '',
+      maxlength: [120, 'College name cannot exceed 120 characters'],
+    },
+    degree: {
+      type: String,
+      default: '',
+      maxlength: [80, 'Degree cannot exceed 80 characters'],
+    },
+    graduationYear: {
+      type: String,
+      default: '',
+      maxlength: [4, 'Graduation year cannot exceed 4 characters'],
+    },
+    skills: {
+      type: [String],
+      default: [],
+    },
+    targetCompanyType: {
+      type: String,
+      default: '',
+      maxlength: [40, 'Target company type cannot exceed 40 characters'],
+    },
+    targetRole: {
+      type: String,
+      default: '',
+      maxlength: [60, 'Target role cannot exceed 60 characters'],
+    },
+    portfolio: {
+      type: String,
+      default: '',
+      maxlength: [120, 'Portfolio URL cannot exceed 120 characters'],
+    },
     role: {
       type: String,
       enum: Object.values(ROLES),

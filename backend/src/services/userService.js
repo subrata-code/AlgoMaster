@@ -38,7 +38,7 @@ export const updateProfile = async (userId, payload) => {
   const user = await User.findById(userId);
   if (!user) throw new AppError('User not found', HTTP_STATUS.NOT_FOUND);
 
-  const allowed = ['name', 'bio', 'location', 'github', 'linkedin', 'username'];
+  const allowed = ['name', 'bio', 'location', 'github', 'linkedin', 'username', 'phone', 'college', 'degree', 'graduationYear', 'skills', 'targetCompanyType', 'targetRole', 'portfolio'];
   for (const key of allowed) {
     if (payload[key] !== undefined) {
       user[key] = payload[key];

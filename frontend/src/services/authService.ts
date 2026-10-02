@@ -21,6 +21,14 @@ interface RawBackendUser {
   location?: string
   github?: string
   linkedin?: string
+  phone?: string
+  college?: string
+  degree?: string
+  graduationYear?: string
+  skills?: string[]
+  targetCompanyType?: string
+  targetRole?: string
+  portfolio?: string
   profileImage?: string
   avatar?: string
   createdAt?: string
@@ -45,6 +53,14 @@ export function normalizeUser(user: RawBackendUser): User {
     location: user.location,
     github: user.github,
     linkedin: user.linkedin,
+    phone: user.phone,
+    college: user.college,
+    degree: user.degree,
+    graduationYear: user.graduationYear,
+    skills: user.skills ?? [],
+    targetCompanyType: user.targetCompanyType,
+    targetRole: user.targetRole,
+    portfolio: user.portfolio,
     onboardingCompleted: user.onboarding?.completed,
     tourCompleted: user.onboarding?.tourCompleted,
     difficultyPreference: user.onboarding?.difficultyPreference,
