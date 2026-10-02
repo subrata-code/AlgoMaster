@@ -6,7 +6,7 @@ import type { User } from '@/types'
 interface AuthContextValue {
   user: User | null
   loading: boolean
-  login: (credentials: AuthCredentials) => Promise<{ user: User; token: string }>
+  login: (credentials: AuthCredentials) => Promise<{ user?: User; token?: string; requiresVerification?: boolean }>
   signup: (data: SignupData) => Promise<{ user?: User; token?: string; requiresVerification?: boolean }>
   googleLogin: (accessToken: string) => Promise<{ user: User; token: string }>
   verifyEmail: (email: string, otp: string) => Promise<{ user: User; token: string }>
@@ -55,7 +55,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (credentials: AuthCredentials) => {
     const response = await authService.login(credentials)
-    setUser(response.user)
+    if (response.user && response.token) {
+      setUser(response.user)
+    }
     return response
   }, [])
 

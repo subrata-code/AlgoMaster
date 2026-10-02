@@ -67,12 +67,21 @@ export const googleLogin = asyncHandler(async (req, res) => {
 });
 
 export const login = asyncHandler(async (req, res) => {
-  const { user, token } = await authService.login(req.body);
-  setAuthCookie(res, token);
+  const result = await authService.login(req.body);
+
+  if (result.requiresVerification) {
+    return sendSuccess(res, {
+      statusCode: HTTP_STATUS.OK,
+      message: 'Please verify your email address.',
+      data: result,
+    });
+  }
+
+  setAuthCookie(res, result.token);
 
   sendSuccess(res, {
     message: 'Logged in successfully',
-    data: { user, token },
+    data: result,
   });
 });
 

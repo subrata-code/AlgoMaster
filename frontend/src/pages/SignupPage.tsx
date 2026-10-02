@@ -1,5 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
@@ -16,8 +16,16 @@ import { toast } from '@/hooks/use-toast'
 export default function SignupPage() {
   const navigate = useNavigate()
   const { signup, verifyEmail, resendVerification } = useAuth()
-  const [needsOtp, setNeedsOtp] = useState(false)
-  const [registeredEmail, setRegisteredEmail] = useState('')
+  const location = useLocation()
+  const [needsOtp, setNeedsOtp] = useState(location.state?.needsOtp || false)
+  const [registeredEmail, setRegisteredEmail] = useState(location.state?.email || '')
+
+  useEffect(() => {
+    if (location.state?.needsOtp) {
+      setNeedsOtp(true)
+      setRegisteredEmail(location.state.email)
+    }
+  }, [location.state])
   const [otp, setOtp] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
   const {

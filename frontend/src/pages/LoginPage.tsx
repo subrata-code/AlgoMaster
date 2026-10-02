@@ -26,7 +26,12 @@ export default function LoginPage() {
 
   const onSubmit = handleSubmit(async (values) => {
     try {
-      await login(values)
+      const response = await login(values)
+      if (response.requiresVerification) {
+        toast({ title: 'Verification required', description: 'Please verify your email to log in.' })
+        void navigate(ROUTES.SIGNUP, { state: { email: values.email, needsOtp: true } })
+        return
+      }
       toast({ title: 'Welcome back', description: 'Signed in successfully.' })
       void navigate(ROUTES.DASHBOARD)
     } catch (error) {

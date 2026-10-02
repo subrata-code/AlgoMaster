@@ -52,11 +52,15 @@ export function normalizeUser(user: RawBackendUser): User {
 }
 
 export const authService = {
-  async login(credentials: AuthCredentials): Promise<{ user: User; token: string }> {
-    const response = await apiRequest<{ user: RawBackendUser; token: string }>('/auth/login', {
+  async login(credentials: AuthCredentials): Promise<{ user?: User; token?: string; requiresVerification?: boolean }> {
+    const response = await apiRequest<{ user: RawBackendUser; token?: string; requiresVerification?: boolean }>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     })
+
+    if (response.data!.requiresVerification) {
+      return { requiresVerification: true, user: normalizeUser(response.data!.user) }
+    }
 
     return {
       user: normalizeUser(response.data!.user),

@@ -153,7 +153,7 @@ export const login = async ({ email, password }) => {
   }
 
   if (!user.isEmailVerified) {
-    throw new AppError('Please verify your email address', HTTP_STATUS.FORBIDDEN);
+    return { user: { email: user.email }, requiresVerification: true };
   }
 
   const token = signToken(user._id.toString());
