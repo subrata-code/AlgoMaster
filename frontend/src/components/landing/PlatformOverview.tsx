@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowRight, BookOpen, Calendar, Code2, Compass, Layers, Map, Target, Trophy, Users } from 'lucide-react'
+import { ArrowRight, Calendar, Code2, Layers, Map, Target, Trophy } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@/constants'

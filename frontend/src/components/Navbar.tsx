@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { ChevronRight, LayoutDashboard, Menu, Moon, Sun, Tag, X } from 'lucide-react'
+import { ChevronRight, LayoutDashboard, Menu, Moon, Sun, X } from 'lucide-react'
 import { useState } from 'react'
 import { APP_NAME, NAV_LINKS, ROUTES } from '@/constants'
 import { useAuth } from '@/context/AuthContext'
