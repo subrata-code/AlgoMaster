@@ -1,5 +1,10 @@
+import dns from 'dns';
 import nodemailer from 'nodemailer';
 import env from '../config/env.js';
+
+// Force IPv4 DNS resolution BEFORE creating the transporter.
+// Render's network cannot reach IPv6 addresses, causing Gmail SMTP to timeout.
+dns.setDefaultResultOrder('ipv4first');
 
 let transporter;
 
