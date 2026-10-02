@@ -1,5 +1,10 @@
+import dns from 'dns';
 import express from 'express';
 import cors from 'cors';
+
+// Force IPv4 DNS resolution — Render does not support outbound IPv6,
+// which causes Gmail SMTP (smtp.gmail.com) to timeout on IPv6 addresses.
+dns.setDefaultResultOrder('ipv4first');
 import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
