@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ExternalLink } from 'lucide-react'
 import { APP_NAME, ROUTES } from '@/constants'
 
 /* ─── Footer navigation columns ─── */
@@ -120,10 +121,19 @@ export function Footer() {
         </div>
 
         {/* Bottom row */}
-        <div className="mt-8 flex flex-col gap-3 border-t border-white/6 pt-6 text-xs text-white/40 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-4 border-t border-white/6 pt-6 text-xs text-white/40 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {APP_NAME}. All rights reserved.</p>
-          <div className="flex flex-wrap gap-4">
-            <span>Co-Founder — Subrata Bag</span>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <a 
+              href="https://subrata-s-portfolio.vercel.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group flex items-center gap-1.5 hover:text-white/80 transition-colors"
+            >
+              Co-Founder — Subrata Bag
+              <ExternalLink className="h-3 w-3 opacity-40 transition-opacity group-hover:opacity-100" />
+            </a>
+            <span className="hidden text-white/10 sm:inline">|</span>
             <a href="#" className="hover:text-white/70 transition-colors">Terms</a>
             <a href="#" className="hover:text-white/70 transition-colors">Privacy</a>
             <a href="#" className="hover:text-white/70 transition-colors">Refund</a>
