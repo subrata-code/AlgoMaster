@@ -10,9 +10,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { LogOut, User, Settings } from 'lucide-react'
+import { LogOut, User as UserIcon, Settings } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/constants'
+import { useState, useEffect } from 'react'
+import { dashboardService } from '@/services'
+import type { DashboardStats } from '@/types'
 
 interface AppHeaderProps {
   toggleSidebar: () => void
@@ -21,6 +24,19 @@ interface AppHeaderProps {
 export function AppHeader({ toggleSidebar }: AppHeaderProps) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+
+  useEffect(() => {
+    async function loadStats() {
+      try {
+        const s = await dashboardService.getStats()
+        setStats(s)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    loadStats()
+  }, [])
 
   return (
     <header className="h-16 shrink-0 flex items-center justify-between px-4 lg:px-6 border-b border-white/5 bg-[#0e0e12]/80 backdrop-blur-xl sticky top-0 z-10">
@@ -39,9 +55,9 @@ export function AppHeader({ toggleSidebar }: AppHeaderProps) {
       <div className="flex items-center gap-4 lg:gap-6">
         {/* App-like Stats (Icons + Values only) */}
         <div className="hidden sm:flex items-center gap-3 text-sm font-medium">
-          <div className="flex items-center gap-1.5 text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20" title="12 Day Streak">
+          <div className="flex items-center gap-1.5 text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20" title={`${stats?.streak || 0} Day Streak`}>
             <Flame className="h-4 w-4" />
-            <span>12</span>
+            <span>{stats?.streak || 0}</span>
           </div>
           <div className="flex items-center gap-1.5 text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md border border-blue-500/20" title="POTD Complete">
             <Calendar className="h-4 w-4" />
@@ -79,7 +95,7 @@ export function AppHeader({ toggleSidebar }: AppHeaderProps) {
             </div>
             <DropdownMenuSeparator className="bg-white/10" />
             <DropdownMenuItem className="cursor-pointer focus:bg-white/10" onClick={() => navigate(ROUTES.PROFILE)}>
-              <User className="mr-2 h-4 w-4" />
+              <UserIcon className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer focus:bg-white/10" onClick={() => navigate(ROUTES.SETTINGS)}>

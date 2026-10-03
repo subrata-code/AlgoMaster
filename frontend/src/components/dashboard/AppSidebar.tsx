@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard,
@@ -123,7 +123,7 @@ function NavItemComponent({ item, isCollapsed, depth = 0 }: { item: NavItem, isC
   )
 }
 
-import { PanelLeftClose } from 'lucide-react'
+import { PanelLeftClose, Menu } from 'lucide-react'
 
 export function AppSidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
   return (
@@ -134,31 +134,24 @@ export function AppSidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
     >
       {/* Sidebar Header */}
       <div className="h-16 flex items-center justify-between px-4 border-b border-white/5 shrink-0 overflow-hidden">
-        <div 
-          onClick={() => isCollapsed && toggleSidebar()}
-          className={cn("flex items-center gap-3 shrink-0", isCollapsed ? "mx-auto cursor-pointer hover:opacity-80" : "")}
-        >
+        <Link to={ROUTES.HOME} className={cn("flex items-center gap-3 shrink-0", isCollapsed && "hidden")}>
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-[#2563eb] to-[#60a5fa] text-sm font-bold text-white shadow-md shadow-blue-500/25">
             A
           </span>
-          {!isCollapsed && (
-            <motion.span 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              className="text-base tracking-tight font-semibold text-white whitespace-nowrap"
-            >
-              {APP_NAME}
-            </motion.span>
-          )}
-        </div>
-        {!isCollapsed && (
-          <button 
-            onClick={toggleSidebar}
-            className="text-muted-foreground hover:text-white transition-colors"
+          <motion.span 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            className="text-base tracking-tight font-semibold text-white whitespace-nowrap"
           >
-            <PanelLeftClose className="h-5 w-5" />
-          </button>
-        )}
+            {APP_NAME}
+          </motion.span>
+        </Link>
+        <button 
+          onClick={toggleSidebar}
+          className={cn("text-muted-foreground hover:text-white transition-colors", isCollapsed && "mx-auto")}
+        >
+          {isCollapsed ? <Menu className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
+        </button>
       </div>
 
       {/* Navigation */}
