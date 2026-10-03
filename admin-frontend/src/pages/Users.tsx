@@ -18,8 +18,9 @@ export function Users() {
   const fetchUsers = async () => {
     setLoading(true)
     const { data } = await apiRequest(`/admin/users?search=${search}&sort=${sort}`)
-    if (data?.users) {
-      setUsers(data.users)
+    const responseData = data as any
+    if (responseData?.users) {
+      setUsers(responseData.users)
     }
     setLoading(false)
   }

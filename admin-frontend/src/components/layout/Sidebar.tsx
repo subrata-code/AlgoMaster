@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { apiRequest } from '../../lib/api'
-import { LayoutDashboard, Users, Code2, BookOpen, LogOut, MessageSquare, Quote, Building2, HelpCircle, Map } from 'lucide-react'
+import { LayoutDashboard, Users, Code2, BookOpen, LogOut, Quote, Building2, HelpCircle, Map } from 'lucide-react'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },

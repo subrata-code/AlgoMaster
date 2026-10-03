@@ -35,9 +35,10 @@ export function ContentManager() {
     
     // The APIs return `{ data: { [key]: items } }`. Let's extract the array dynamically.
     if (data) {
-      const keys = Object.keys(data)
-      const arrayKey = keys.find(k => Array.isArray(data[k]))
-      if (arrayKey) setItems(data[arrayKey])
+      const dataObj = data as Record<string, any>
+      const keys = Object.keys(dataObj)
+      const arrayKey = keys.find(k => Array.isArray(dataObj[k]))
+      if (arrayKey) setItems(dataObj[arrayKey])
       else if (Array.isArray(data)) setItems(data) // fallback
     }
     setLoading(false)

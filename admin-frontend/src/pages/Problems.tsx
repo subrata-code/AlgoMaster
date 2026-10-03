@@ -11,9 +11,10 @@ export function Problems() {
   const fetchProblems = async () => {
     setLoading(true)
     const { data } = await apiRequest(`/admin/problems`)
-    if (data?.problems) {
+    const responseData = data as any
+    if (responseData?.problems) {
       // client-side filtering for simplicity since admin/problems returns all
-      let filtered = data.problems
+      let filtered = responseData.problems
       if (search) {
         const lower = search.toLowerCase()
         filtered = filtered.filter((p: any) => 
