@@ -283,15 +283,26 @@ const GradientWaves: React.FC<GradientWavesProps> = ({
     let raf = 0;
     let isVisible = true;
     let isPageVisible = !document.hidden;
-    const t0 = performance.now();
+    
+    let lastTime = performance.now();
+    let accumulatedTime = 0;
 
     const loop = (t: number) => {
       raf = requestAnimationFrame(loop);
 
       // Skip GPU work when off-screen or tab is hidden
-      if (!isVisible || !isPageVisible) return;
+      if (!isVisible || !isPageVisible) {
+        lastTime = t;
+        return;
+      }
 
-      (program.uniforms.iTime as { value: number }).value = (t - t0) * 0.001;
+      let delta = t - lastTime;
+      // Cap delta at 50ms to prevent massive time jumps when returning to tab
+      if (delta > 50) delta = 16.66;
+      accumulatedTime += delta;
+      lastTime = t;
+
+      (program.uniforms.iTime as { value: number }).value = accumulatedTime * 0.001;
       const tx = enableMouseRef.current ? targetMouse[0] : 0.5;
       const ty = enableMouseRef.current ? targetMouse[1] : 0.5;
       currentMouse[0] += 0.05 * (tx - currentMouse[0]);
@@ -388,6 +399,7 @@ const GradientWaves: React.FC<GradientWavesProps> = ({
     <div
       ref={containerRef}
       className={`gradient-waves-container ${className}`.trim()}
+      style={{ willChange: 'transform', transform: 'translateZ(0)' }}
     />
   );
 };

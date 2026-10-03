@@ -77,22 +77,22 @@ export default function HomePage() {
         </div>
 
         {/* Social/Community Section */}
-        <div className="relative border-t border-white/5 bg-background/40 backdrop-blur-md">
+        <div className="relative border-t border-white/5 bg-background/40 backdrop-blur-md" style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
           <SocialReach stats={stats} />
         </div>
 
         {/* Platform Overview Section */}
-        <div className="relative border-t border-white/5 bg-background/60 backdrop-blur-md">
+        <div className="relative border-t border-white/5 bg-background/60 backdrop-blur-md" style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
           <PlatformOverview />
         </div>
 
         {/* Testimonials Section */}
-        <div className="relative border-t border-white/5 bg-background/40 backdrop-blur-md">
+        <div className="relative border-t border-white/5 bg-background/40 backdrop-blur-md" style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
           <TestimonialsMarquee testimonials={testimonials} />
         </div>
 
         {/* FAQ Section */}
-        <div className="relative border-t border-white/5 bg-background/60 backdrop-blur-md">
+        <div className="relative border-t border-white/5 bg-background/60 backdrop-blur-md" style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
           <FAQSection faqs={faqs} />
         </div>
       </div>
