@@ -7,7 +7,7 @@ export function AdminLayout() {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <div className="container-page flex flex-1 gap-0 py-6 lg:gap-8">
+      <div className="container-page flex flex-1 gap-0 pt-24 pb-6 lg:gap-8">
         <Sidebar variant="admin" />
         <div className="min-w-0 flex-1">
           <MobileNavTabs variant="admin" />
