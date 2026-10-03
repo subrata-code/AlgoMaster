@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard,
@@ -51,6 +51,7 @@ const APP_NAV: NavItem[] = [
 
 interface SidebarProps {
   isCollapsed: boolean
+  toggleSidebar: () => void
 }
 
 function NavItemComponent({ item, isCollapsed, depth = 0 }: { item: NavItem, isCollapsed: boolean, depth?: number }) {
@@ -122,7 +123,9 @@ function NavItemComponent({ item, isCollapsed, depth = 0 }: { item: NavItem, isC
   )
 }
 
-export function AppSidebar({ isCollapsed }: SidebarProps) {
+import { PanelLeftClose } from 'lucide-react'
+
+export function AppSidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
   return (
     <motion.aside
       initial={false}
@@ -130,8 +133,11 @@ export function AppSidebar({ isCollapsed }: SidebarProps) {
       className="shrink-0 border-r border-white/10 bg-[#0e0e12] h-full hidden lg:flex flex-col z-20"
     >
       {/* Sidebar Header */}
-      <div className="h-16 flex items-center px-4 border-b border-white/5 shrink-0 overflow-hidden">
-        <Link to={ROUTES.HOME} className="flex items-center gap-3 shrink-0">
+      <div className="h-16 flex items-center justify-between px-4 border-b border-white/5 shrink-0 overflow-hidden">
+        <div 
+          onClick={() => isCollapsed && toggleSidebar()}
+          className={cn("flex items-center gap-3 shrink-0", isCollapsed ? "mx-auto cursor-pointer hover:opacity-80" : "")}
+        >
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-[#2563eb] to-[#60a5fa] text-sm font-bold text-white shadow-md shadow-blue-500/25">
             A
           </span>
@@ -144,7 +150,15 @@ export function AppSidebar({ isCollapsed }: SidebarProps) {
               {APP_NAME}
             </motion.span>
           )}
-        </Link>
+        </div>
+        {!isCollapsed && (
+          <button 
+            onClick={toggleSidebar}
+            className="text-muted-foreground hover:text-white transition-colors"
+          >
+            <PanelLeftClose className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       {/* Navigation */}

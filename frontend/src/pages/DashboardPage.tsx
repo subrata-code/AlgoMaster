@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Bookmark, Flame, Target, Trophy, ArrowRight, Sparkles, Brain, Database, Code2 } from 'lucide-react'
+import { Bookmark, Flame, Target, Trophy, ArrowRight, Brain, Database, Code2 } from 'lucide-react'
 import {
   Bar,
   BarChart,
@@ -42,196 +42,172 @@ export default function DashboardPage() {
   const progress = stats.totalProblems > 0 ? Math.round((stats.solved / stats.totalProblems) * 100) : 0
 
   return (
-    <div className="space-y-10 pb-20">
+    <div className="space-y-6 pb-20 max-w-6xl mx-auto">
       
-      {/* 1. Welcome Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-blue-500/20 border border-white/10 p-8 sm:p-12">
-        <div className="absolute top-0 right-0 -mt-20 -mr-20 w-72 h-72 bg-purple-500/30 blur-[100px] rounded-full mix-blend-screen pointer-events-none" />
-        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-72 h-72 bg-blue-500/30 blur-[100px] rounded-full mix-blend-screen pointer-events-none" />
-        
-        <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm font-medium mb-6 backdrop-blur-md">
-            <Sparkles className="h-4 w-4 text-amber-400" />
-            <span className="bg-gradient-to-r from-amber-200 to-yellow-500 bg-clip-text text-transparent">Ready to conquer today?</span>
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
-            Welcome back, <span className="text-white">{user?.name?.split(' ')[0] || 'Challenger'}</span>.
+      {/* 1. Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            Hi, {user?.name?.split(' ')[0] || 'User'}! 👋
           </h1>
-          <p className="text-lg text-white/60 max-w-2xl">
-            You're currently in the top 15% of active users this week. Keep up the momentum and tackle your next challenge.
+          <p className="text-sm text-muted-foreground mt-1">
+            Track your progress, continue your preparation, and achieve your goals.
           </p>
         </div>
       </div>
 
-      {/* 2. Quick Stats Row */}
+      {/* 2. Quick Stats Row (Bento Grid Style) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Problems Solved', value: stats.solved, icon: Trophy, color: 'text-yellow-500', bg: 'bg-yellow-500/10' },
-          { label: 'Day Streak', value: stats.streak, icon: Flame, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-          { label: 'Mastery Score', value: `${progress}%`, icon: Target, color: 'text-green-500', bg: 'bg-green-500/10' },
-          { label: 'Bookmarks', value: stats.bookmarks, icon: Bookmark, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: 'Problems Solved', value: stats.solved, icon: Trophy, color: 'text-yellow-500' },
+          { label: 'Current Streak', value: stats.streak, icon: Flame, color: 'text-orange-500' },
+          { label: 'Mastery Score', value: `${progress}%`, icon: Target, color: 'text-green-500' },
+          { label: 'Bookmarks', value: stats.bookmarks, icon: Bookmark, color: 'text-blue-500' },
         ].map((item, i) => (
-          <div key={i} className="flex flex-col gap-2 p-5 rounded-2xl bg-[#12121a] border border-white/5 hover:bg-white/[0.02] transition-colors">
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-xl ${item.bg}`}>
-                <item.icon className={`h-5 w-5 ${item.color}`} />
-              </div>
-              <span className="text-sm font-medium text-white/50">{item.label}</span>
+          <div key={i} className="flex flex-col gap-1 p-5 rounded-xl bg-card border border-border shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <item.icon className={`h-4 w-4 ${item.color}`} />
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{item.label}</span>
             </div>
-            <span className="text-3xl font-bold tracking-tight pl-1">{item.value}</span>
+            <span className="text-3xl font-semibold tabular-nums tracking-tight">{item.value}</span>
           </div>
         ))}
       </div>
 
-      {/* 3. Special Curated Tracks */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold tracking-tight">Curated For You</h2>
-          <Link to={ROUTES.ROADMAP} className="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-medium transition-colors">
-            View all paths <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
+      {/* 3. Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* 100 Day Challenge */}
-          <Link to={ROUTES.JOURNEY_100} className="group relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#1a1a2e] to-[#0e0e16] border border-indigo-500/30 p-6 sm:p-8 hover:border-indigo-500/60 transition-all hover:-translate-y-1 shadow-[0_0_40px_-10px_rgba(99,102,241,0.2)]">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 blur-[50px] rounded-full group-hover:bg-indigo-500/40 transition-colors" />
-            <div className="relative z-10 flex flex-col h-full justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-indigo-500/20 rounded-2xl border border-indigo-500/30">
-                    <Flame className="h-6 w-6 text-indigo-400" />
-                  </div>
-                  <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-semibold text-white/80">RECOMMENDED</span>
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-2">100 Days of Code</h3>
-                <p className="text-sm text-white/60 line-clamp-2">Master DSA from scratch to advanced topics with a daily structured plan.</p>
-              </div>
-              <div className="mt-8 flex items-center justify-between">
-                <span className="text-sm font-medium text-indigo-400">Continue Day 13</span>
-                <div className="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white transition-colors">
-                  <ArrowRight className="h-4 w-4" />
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          {/* Dynamic Programming */}
-          <Link to={ROUTES.PROBLEMS} className="group relative overflow-hidden rounded-3xl bg-[#12121a] border border-white/5 p-6 sm:p-8 hover:bg-white/[0.02] hover:border-white/10 transition-all hover:-translate-y-1">
-            <div className="relative z-10 flex flex-col h-full justify-between">
-              <div>
-                <div className="p-3 bg-purple-500/10 rounded-2xl border border-purple-500/20 w-max mb-4">
-                  <Brain className="h-6 w-6 text-purple-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">DP Special Playlist</h3>
-                <p className="text-sm text-white/60 line-clamp-2">Struggling with Dynamic Programming? We broke it down into 50 essential patterns.</p>
-              </div>
-              <div className="mt-8 flex items-center gap-3">
-                <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
-                  <div className="h-full bg-purple-500 rounded-full" style={{ width: '45%' }} />
-                </div>
-                <span className="text-xs font-medium text-white/50">45%</span>
-              </div>
-            </div>
-          </Link>
-
-          {/* SQL Mastery */}
-          <Link to="/sql" className="group relative overflow-hidden rounded-3xl bg-[#12121a] border border-white/5 p-6 sm:p-8 hover:bg-white/[0.02] hover:border-white/10 transition-all hover:-translate-y-1">
-            <div className="relative z-10 flex flex-col h-full justify-between">
-              <div>
-                <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 w-max mb-4">
-                  <Database className="h-6 w-6 text-emerald-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">SQL Mastery</h3>
-                <p className="text-sm text-white/60 line-clamp-2">From basic SELECTs to advanced window functions and complex joins.</p>
-              </div>
-              <div className="mt-8 flex items-center justify-between">
-                 <span className="text-sm font-medium text-white/40">Start Track</span>
-                <div className="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition-colors">
-                  <ArrowRight className="h-4 w-4" />
-                </div>
-              </div>
-            </div>
-          </Link>
+        {/* Left Column: Curated Tracks */}
+        <div className="lg:col-span-2 space-y-6">
+          <h2 className="text-lg font-semibold border-b border-border pb-2">Continue Preparation</h2>
           
-           {/* Array Beginners */}
-           <Link to={`${ROUTES.PROBLEMS}?topic=array`} className="group relative overflow-hidden rounded-3xl bg-[#12121a] border border-white/5 p-6 sm:p-8 hover:bg-white/[0.02] hover:border-white/10 transition-all hover:-translate-y-1">
-            <div className="relative z-10 flex flex-col h-full justify-between">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* 100 Day Challenge */}
+            <Link to={ROUTES.JOURNEY_100} className="group relative flex flex-col justify-between p-5 rounded-xl bg-card border border-border hover:border-foreground/20 transition-all shadow-sm">
               <div>
-                <div className="p-3 bg-sky-500/10 rounded-2xl border border-sky-500/20 w-max mb-4">
-                  <Code2 className="h-6 w-6 text-sky-400" />
+                <div className="flex items-center justify-between mb-3">
+                  <div className="p-2 bg-orange-500/10 rounded-lg text-orange-500">
+                    <Flame className="h-5 w-5" />
+                  </div>
+                  <span className="text-xs font-semibold bg-accent text-accent-foreground px-2 py-0.5 rounded-md">Primary</span>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Arrays for Beginners</h3>
-                <p className="text-sm text-white/60 line-clamp-2">Master the fundamental data structure with this curated list of 25 problems.</p>
+                <h3 className="font-semibold text-foreground mb-1 group-hover:text-orange-500 transition-colors">100 Days of Code</h3>
+                <p className="text-xs text-muted-foreground line-clamp-2">Consistent daily problem solving to build strong fundamentals.</p>
               </div>
-              <div className="mt-8 flex items-center justify-between">
-                 <span className="text-sm font-medium text-white/40">Start Track</span>
-                <div className="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-sky-500 group-hover:text-white transition-colors">
-                  <ArrowRight className="h-4 w-4" />
-                </div>
+              <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+                <span className="text-xs font-medium text-foreground">Day {stats.streak > 0 ? stats.streak : 1} / 100</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-orange-500 transition-colors" />
               </div>
-            </div>
-          </Link>
+            </Link>
 
-        </div>
-      </div>
-
-      {/* 4. Activity & Analytics Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Weekly Chart */}
-        <div className="lg:col-span-2 rounded-3xl border border-white/5 bg-[#12121a] p-6 sm:p-8">
-          <div className="mb-6">
-            <h3 className="text-xl font-semibold">Weekly Activity</h3>
-            <p className="text-sm text-white/50">Submissions over the last 7 days</p>
-          </div>
-          <div className="h-64">
-             {stats.weeklyProgress && stats.weeklyProgress.length > 0 ? (
-               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stats.weeklyProgress}>
-                  <XAxis dataKey="day" tickLine={false} axisLine={false} fontSize={12} stroke="rgba(255,255,255,0.3)" />
-                  <Tooltip
-                    contentStyle={{
-                      background: '#1a1a24',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '12px',
-                      color: 'white'
-                    }}
-                    cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-                  />
-                  <Bar dataKey="solved" fill="#6366f1" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-             ) : (
-               <div className="h-full flex items-center justify-center text-white/30 text-sm">
-                 Not enough data yet. Solve some problems!
-               </div>
-             )}
-          </div>
-        </div>
-
-        {/* Recent Activity List */}
-        <div className="rounded-3xl border border-white/5 bg-[#12121a] p-6 sm:p-8 flex flex-col">
-          <div className="mb-6">
-            <h3 className="text-xl font-semibold">Recent Submissions</h3>
-          </div>
-          <div className="flex-1 overflow-y-auto pr-2 space-y-4">
-             {activity.length > 0 ? activity.map((item) => (
-                <div key={item.id} className="group flex items-start gap-3">
-                  <div className="mt-1 w-2 h-2 rounded-full bg-green-500 shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-white group-hover:text-indigo-400 transition-colors cursor-pointer line-clamp-1">{item.title}</p>
-                    <time className="text-xs text-white/40">{formatRelativeTime(item.timestamp)}</time>
+            {/* Dynamic Programming */}
+            <Link to={ROUTES.PROBLEMS} className="group relative flex flex-col justify-between p-5 rounded-xl bg-card border border-border hover:border-foreground/20 transition-all shadow-sm">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="p-2 bg-purple-500/10 rounded-lg text-purple-500">
+                    <Brain className="h-5 w-5" />
                   </div>
                 </div>
-              )) : (
-                 <div className="flex items-center justify-center text-white/30 text-sm h-full pb-10">
-                   No recent activity
+                <h3 className="font-semibold text-foreground mb-1 group-hover:text-purple-500 transition-colors">DP Special</h3>
+                <p className="text-xs text-muted-foreground line-clamp-2">Master dynamic programming through 50 essential pattern questions.</p>
+              </div>
+              <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+                <div className="flex-1 mr-4">
+                  <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                    <div className="h-full bg-purple-500 rounded-full" style={{ width: '45%' }} />
+                  </div>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-purple-500 transition-colors" />
+              </div>
+            </Link>
+
+            {/* Arrays */}
+            <Link to={`${ROUTES.PROBLEMS}?topic=array`} className="group relative flex flex-col justify-between p-5 rounded-xl bg-card border border-border hover:border-foreground/20 transition-all shadow-sm">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="p-2 bg-sky-500/10 rounded-lg text-sky-500">
+                    <Code2 className="h-5 w-5" />
+                  </div>
+                </div>
+                <h3 className="font-semibold text-foreground mb-1 group-hover:text-sky-500 transition-colors">Arrays for Beginners</h3>
+                <p className="text-xs text-muted-foreground line-clamp-2">Solidify your understanding of the most common data structure.</p>
+              </div>
+              <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+                 <span className="text-xs font-medium text-foreground">Start Track</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-sky-500 transition-colors" />
+              </div>
+            </Link>
+
+            {/* SQL */}
+            <Link to="/sql" className="group relative flex flex-col justify-between p-5 rounded-xl bg-card border border-border hover:border-foreground/20 transition-all shadow-sm">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500">
+                    <Database className="h-5 w-5" />
+                  </div>
+                </div>
+                <h3 className="font-semibold text-foreground mb-1 group-hover:text-emerald-500 transition-colors">SQL Mastery</h3>
+                <p className="text-xs text-muted-foreground line-clamp-2">Complete database querying guide from SELECT to Window functions.</p>
+              </div>
+              <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+                 <span className="text-xs font-medium text-foreground">Start Track</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-emerald-500 transition-colors" />
+              </div>
+            </Link>
+          </div>
+
+          {/* Activity Chart */}
+          <div className="mt-8">
+            <h2 className="text-lg font-semibold border-b border-border pb-2 mb-4">Submission Activity</h2>
+            <div className="h-64 rounded-xl bg-card border border-border p-4 shadow-sm">
+               {stats.weeklyProgress && stats.weeklyProgress.length > 0 ? (
+                 <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={stats.weeklyProgress}>
+                    <XAxis dataKey="day" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" />
+                    <Tooltip
+                      contentStyle={{
+                        background: 'var(--card)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '8px',
+                        color: 'var(--foreground)'
+                      }}
+                      cursor={{ fill: 'var(--accent)' }}
+                    />
+                    <Bar dataKey="solved" fill="var(--foreground)" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+               ) : (
+                 <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
+                   Not enough data yet. Solve some problems!
                  </div>
-              )}
+               )}
+            </div>
           </div>
         </div>
-      </div>
 
+        {/* Right Column: Recent Activity Feed */}
+        <div className="space-y-6">
+          <h2 className="text-lg font-semibold border-b border-border pb-2">Recent Submissions</h2>
+          <div className="rounded-xl bg-card border border-border shadow-sm p-4 flex flex-col min-h-[400px]">
+            <div className="flex-1 overflow-y-auto pr-2 space-y-4">
+               {activity.length > 0 ? activity.map((item) => (
+                  <div key={item.id} className="group flex items-start gap-3">
+                    <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground hover:underline cursor-pointer line-clamp-1">{item.title}</p>
+                      <time className="text-xs text-muted-foreground">{formatRelativeTime(item.timestamp)}</time>
+                    </div>
+                  </div>
+                )) : (
+                   <div className="flex items-center justify-center text-muted-foreground text-sm h-full pb-10">
+                     No recent activity found.
+                   </div>
+                )}
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   )
 }

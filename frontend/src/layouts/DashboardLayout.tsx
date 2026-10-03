@@ -23,11 +23,13 @@ export function DashboardLayout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0a0a0f] text-white selection:bg-indigo-500/30">
-      <AppSidebar isCollapsed={isSidebarCollapsed} />
+      <AppSidebar 
+        isCollapsed={isSidebarCollapsed} 
+        toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
+      />
       
       <div className="flex-1 flex flex-col min-w-0">
         <AppHeader 
-          isSidebarCollapsed={isSidebarCollapsed} 
           toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
         />
         

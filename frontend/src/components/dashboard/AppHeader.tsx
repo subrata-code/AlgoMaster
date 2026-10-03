@@ -1,4 +1,4 @@
-import { Menu, PanelLeftClose, PanelLeft, Flame, Calendar, Medal } from 'lucide-react'
+import { Menu, Flame, Calendar, Medal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/context/AuthContext'
 import { NotificationBell } from '@/components/NotificationBell'
@@ -15,25 +15,17 @@ import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/constants'
 
 interface AppHeaderProps {
-  isSidebarCollapsed: boolean
   toggleSidebar: () => void
 }
 
-export function AppHeader({ isSidebarCollapsed, toggleSidebar }: AppHeaderProps) {
+export function AppHeader({ toggleSidebar }: AppHeaderProps) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
   return (
     <header className="h-16 shrink-0 flex items-center justify-between px-4 lg:px-6 border-b border-white/5 bg-[#0e0e12]/80 backdrop-blur-xl sticky top-0 z-10">
       <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleSidebar}
-          className="hidden lg:flex text-muted-foreground hover:text-white"
-        >
-          {isSidebarCollapsed ? <PanelLeft className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
-        </Button>
+        {/* Mobile toggle only */}
         <Button
           variant="ghost"
           size="icon"
@@ -45,19 +37,17 @@ export function AppHeader({ isSidebarCollapsed, toggleSidebar }: AppHeaderProps)
       </div>
 
       <div className="flex items-center gap-4 lg:gap-6">
-        {/* App-like Stats */}
-        <div className="hidden sm:flex items-center gap-4 text-sm font-medium">
-          <div className="flex items-center gap-1.5 text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+        {/* App-like Stats (Icons + Values only) */}
+        <div className="hidden sm:flex items-center gap-3 text-sm font-medium">
+          <div className="flex items-center gap-1.5 text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20" title="12 Day Streak">
             <Flame className="h-4 w-4" />
-            <span>12 Day Streak</span>
+            <span>12</span>
           </div>
-          <div className="flex items-center gap-1.5 text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+          <div className="flex items-center gap-1.5 text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md border border-blue-500/20" title="POTD Complete">
             <Calendar className="h-4 w-4" />
-            <span>POTD Done</span>
           </div>
-          <div className="flex items-center gap-1.5 text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20">
+          <div className="flex items-center gap-1.5 text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-md border border-purple-500/20" title="Master Rank">
             <Medal className="h-4 w-4" />
-            <span>Master</span>
           </div>
         </div>
 
