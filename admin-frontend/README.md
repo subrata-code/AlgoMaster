@@ -1,32 +1,49 @@
-# React + TypeScript + Vite
+<div align="center">
+  <h1>🛡️ AlgoMaster - Admin Dashboard</h1>
+  <p><strong>The secure control center for platform managers and creators.</strong></p>
+</div>
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+## 📌 Overview
 
-Currently, two official plugins are available:
+The **Admin Frontend** is a dedicated React application built exclusively for administrative tasks. It provides a secure environment to manage users, update DSA problems, and dynamically configure the site's content like FAQS, Testimonials, and Roadmaps.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ⚡ Tech Stack
 
-## React Compiler
+- **Framework:** React 18 + Vite + TypeScript
+- **Styling:** Tailwind CSS + Lucide Icons
+- **Routing:** React Router v6
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Highlights
 
-## Expanding the Oxlint configuration
+- **Strict Access Control:** Rejects non-admin users instantly.
+- **CRUD Mastery:** Easy-to-use interfaces to Create, Read, Update, and Delete platform content.
+- **Real-Time Data Table:** View users' longest streaks, total solved problems, and manage their roles dynamically.
+- **Theme Consistency:** Follows the same beautiful dark-mode glassmorphism aesthetics as the main user portal.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 🛠️ Environment Variables
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+Create a `.env` file in the root of `/admin-frontend`:
+
+```env
+VITE_API_URL=http://localhost:5000/api
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## 🚀 Run Locally
+
+```bash
+# Install all dependencies
+npm install
+
+# Start the Vite development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## 📦 Deployment (Vercel)
+
+1. Connect the repository to Vercel as a **new project**.
+2. Select the `admin-frontend` folder as the Root Directory.
+3. Add the `VITE_API_URL` pointing to your live backend.
+4. Deploy! Ensure you update the backend's `ADMIN_URL` to point to this new Vercel domain to prevent CORS errors.
