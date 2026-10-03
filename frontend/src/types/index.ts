@@ -127,6 +127,25 @@ export interface DashboardStats {
   topicProgress: { topic: string; solved: number; total: number }[]
 }
 
+export interface Weakness {
+  topic: string
+  score: number
+  solvedCount: number
+  totalCount: number
+  topProblemSlug?: string
+  topProblemName?: string
+}
+
+export interface AppNotification {
+  id: string
+  type: 'achievement' | 'streak' | 'weakness' | 'system'
+  title: string
+  message: string
+  read: boolean
+  link?: string
+  createdAt: string
+}
+
 export interface Testimonial {
   id: string
   name: string

@@ -22,6 +22,7 @@ import { APP_NAME, ROUTES } from '@/constants'
 import { useAuth } from '@/context/AuthContext'
 import { useTheme } from '@/context/ThemeContext'
 import { cn } from '@/lib/utils'
+import { NotificationBell } from './NotificationBell'
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
@@ -287,6 +288,7 @@ export function Navbar() {
           {/* Right: Actions */}
           <div className="flex items-center gap-2 shrink-0">
             <ThemeToggle />
+            {user && <NotificationBell />}
 
             {user ? (
               <div className="relative" ref={profileRef}>
@@ -379,6 +381,7 @@ export function Navbar() {
         </Link>
 
         <div className="flex items-center gap-1.5">
+          {user && <NotificationBell />}
           <ThemeToggle />
           <button
             className="floating-navbar-link !px-2.5 !py-1.5 active:scale-95 transition-transform"

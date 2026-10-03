@@ -1,5 +1,5 @@
 import { apiRequest } from '@/lib/api'
-import type { Achievement, Activity, Bookmark, DashboardStats, User } from '@/types'
+import type { Achievement, Activity, Bookmark, DashboardStats, User, Weakness, AppNotification } from '@/types'
 import { authService, normalizeUser } from './authService'
 
 export const userService = {
@@ -41,6 +41,30 @@ export const userService = {
       return null
     }
   },
+
+  async isSolved(problemId: string): Promise<boolean> {
+    try {
+      const response = await apiRequest<{ solved: boolean }>(`/users/me/solved/${encodeURIComponent(problemId)}`)
+      return response.data?.solved ?? false
+    } catch {
+      return false
+    }
+  },
+
+  async markSolved(problemId: string): Promise<void> {
+    await apiRequest(`/users/me/solve/${encodeURIComponent(problemId)}`, { method: 'POST' })
+  },
+
+  async logEvent(problemId: string, eventType: string): Promise<void> {
+    try {
+      await apiRequest('/users/me/events', {
+        method: 'POST',
+        body: JSON.stringify({ problemId, eventType }),
+      })
+    } catch {
+      // fail silently for telemetry
+    }
+  },
 }
 
 export const dashboardService = {
@@ -52,6 +76,11 @@ export const dashboardService = {
   async getRecentActivity(limit = 5): Promise<Activity[]> {
     const response = await apiRequest<{ activities: Activity[] }>(`/users/me/activity?limit=${limit}`)
     return response.data?.activities ?? []
+  },
+
+  async getInsights(): Promise<Weakness[]> {
+    const response = await apiRequest<{ weaknesses: Weakness[] }>('/users/me/insights')
+    return response.data?.weaknesses ?? []
   },
 }
 
@@ -78,5 +107,16 @@ export const bookmarkService = {
       { method: 'POST' },
     )
     return response.data ?? { bookmarked: false }
+  },
+}
+
+export const notificationService = {
+  async getRecent(): Promise<AppNotification[]> {
+    const response = await apiRequest<{ notifications: AppNotification[] }>('/users/me/notifications')
+    return response.data?.notifications ?? []
+  },
+
+  async markAllRead(): Promise<void> {
+    await apiRequest('/users/me/notifications/read', { method: 'PUT' })
   },
 }

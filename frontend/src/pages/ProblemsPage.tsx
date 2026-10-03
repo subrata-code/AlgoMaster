@@ -4,7 +4,7 @@ import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ProblemCard } from '@/components/ProblemCard'
-import { PremiumModal } from '@/components/PremiumModal'
+
 import { HintsDialog } from '@/components/HintsDialog'
 import { EmptyState, Loader, Pagination } from '@/components/EmptyState'
 import { PageHeader } from '@/components/PageHeader'
@@ -25,8 +25,7 @@ export default function ProblemsPage() {
   const [platform, setPlatform] = useState<Platform | 'All'>('All')
   const [sortBy, setSortBy] = useState<ProblemFilters['sortBy']>('newest')
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set())
-  const [premiumOpen, setPremiumOpen] = useState(false)
-  const [premiumType, setPremiumType] = useState<'solution' | 'video'>('solution')
+
   const [hintsProblem, setHintsProblem] = useState<Problem | null>(null)
 
   const debouncedSearch = useDebounce(search, 300)
@@ -164,10 +163,7 @@ export default function ProblemsPage() {
                 bookmarked={bookmarks.has(problem.id)}
                 onBookmark={handleBookmark}
                 onHints={setHintsProblem}
-                onLocked={(type) => {
-                  setPremiumType(type)
-                  setPremiumOpen(true)
-                }}
+
               />
             ))}
           </div>
@@ -177,7 +173,7 @@ export default function ProblemsPage() {
         </>
       )}
 
-      <PremiumModal open={premiumOpen} onOpenChange={setPremiumOpen} contentType={premiumType} />
+
       <HintsDialog
         problem={hintsProblem}
         open={Boolean(hintsProblem)}

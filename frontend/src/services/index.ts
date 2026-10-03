@@ -1,5 +1,5 @@
 export { problemService } from './problemService'
-export { userService, dashboardService, bookmarkService } from './userService'
+export { userService, dashboardService, bookmarkService, notificationService } from './userService'
 export { adminService } from './adminService'
 export type { CreateProblemInput } from './adminService'
 export { authService } from './authService'

@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
 import { Bookmark, BookmarkCheck, ExternalLink, Lightbulb, Lock, Play } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -17,7 +17,6 @@ interface ProblemCardProps {
   bookmarked?: boolean
   onBookmark?: (id: string) => void
   onHints?: (problem: Problem) => void
-  onLocked?: (type: 'solution' | 'video') => void
   className?: string
 }
 
@@ -30,7 +29,6 @@ export function ProblemCard({
   bookmarked,
   onBookmark,
   onHints,
-  onLocked,
   className,
 }: ProblemCardProps) {
   return (
@@ -86,13 +84,17 @@ export function ProblemCard({
           <Lightbulb className="h-3.5 w-3.5" />
           Hints
         </Button>
-        <Button size="sm" variant="ghost" onClick={() => onLocked?.('solution')} className="h-8 px-2.5 text-xs sm:h-9 sm:px-3 sm:text-sm">
-          <Lock className="h-3.5 w-3.5" />
-          Solution
+        <Button size="sm" variant="ghost" asChild className="h-8 px-2.5 text-xs sm:h-9 sm:px-3 sm:text-sm">
+          <Link to={`/problems/${problem.id}/solution`}>
+            <Lock className="h-3.5 w-3.5 mr-1" />
+            Solution
+          </Link>
         </Button>
-        <Button size="sm" variant="ghost" onClick={() => onLocked?.('video')} className="h-8 px-2.5 text-xs sm:h-9 sm:px-3 sm:text-sm">
-          <Play className="h-3.5 w-3.5" />
-          Video
+        <Button size="sm" variant="ghost" asChild className="h-8 px-2.5 text-xs sm:h-9 sm:px-3 sm:text-sm">
+          <a href={problem.conceptVideoUrl || '#'} target="_blank" rel="noreferrer">
+            <Play className="h-3.5 w-3.5 mr-1" />
+            Video
+          </a>
         </Button>
         <Button
           size="sm"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ExternalLink, Lock, MessageSquare, Play } from 'lucide-react'
+import { Check, CheckCircle, ExternalLink, Lock, MessageSquare, Play } from 'lucide-react'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,9 +14,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { DifficultyBadge, ProblemCard } from '@/components/ProblemCard'
-import { PremiumModal } from '@/components/PremiumModal'
 import { EmptyState, Loader } from '@/components/EmptyState'
-import { bookmarkService, problemService } from '@/services'
+import { bookmarkService, problemService, userService } from '@/services'
 import { ROUTES } from '@/constants'
 import { toast } from '@/hooks/use-toast'
 import type { Problem } from '@/types'
@@ -27,8 +26,7 @@ export default function ProblemDetailsPage() {
   const [related, setRelated] = useState<Problem[]>([])
   const [loading, setLoading] = useState(true)
   const [bookmarked, setBookmarked] = useState(false)
-  const [premiumOpen, setPremiumOpen] = useState(false)
-  const [premiumType, setPremiumType] = useState<'solution' | 'video'>('solution')
+  const [solved, setSolved] = useState(false)
 
   useEffect(() => {
     if (!id) return
@@ -36,15 +34,17 @@ export default function ProblemDetailsPage() {
     async function load() {
       setLoading(true)
       try {
-        const [p, rel, bm] = await Promise.all([
+        const [p, rel, bm, isSolv] = await Promise.all([
           problemService.getById(id!),
           problemService.getRelated(id!),
           bookmarkService.isBookmarked(id!),
+          userService.isSolved(id!),
         ])
         if (cancelled) return
         setProblem(p)
         setRelated(rel)
         setBookmarked(bm)
+        setSolved(isSolv)
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -69,15 +69,33 @@ export default function ProblemDetailsPage() {
     )
   }
 
-  const openLocked = (type: 'solution' | 'video') => {
-    setPremiumType(type)
-    setPremiumOpen(true)
+  const handleWatchVideo = () => {
+    void userService.logEvent(problem.id, 'video_opened')
+  }
+
+  const handleOpenProblem = () => {
+    void userService.logEvent(problem.id, 'problem_opened')
+  }
+
+  const handleHintOpen = (value: string) => {
+    if (value) {
+      const match = value.match(/hint-(\d+)/)
+      if (match) {
+        void userService.logEvent(problem.id, `hint_${match[1]}_viewed`)
+      }
+    }
   }
 
   const toggleBookmark = async () => {
     const res = await bookmarkService.toggle(problem.id)
     setBookmarked(res.bookmarked)
     toast({ title: res.bookmarked ? 'Bookmarked' : 'Removed from bookmarks' })
+  }
+
+  const markSolved = async () => {
+    await userService.markSolved(problem.id)
+    setSolved(true)
+    toast({ title: '🔥 Problem Solved!', description: 'Your streak & progress updated.' })
   }
 
   return (
@@ -124,10 +142,19 @@ export default function ProblemDetailsPage() {
             </div>
             <div className="mt-6 flex flex-wrap gap-2">
               <Button asChild>
-                <a href={problem.link} target="_blank" rel="noreferrer">
+                <a href={problem.link} target="_blank" rel="noreferrer" onClick={handleOpenProblem}>
                   <ExternalLink className="h-4 w-4" />
                   Open Problem
                 </a>
+              </Button>
+              <Button 
+                variant={solved ? "secondary" : "default"}
+                onClick={markSolved} 
+                disabled={solved}
+                className={solved ? "bg-green-600/20 text-green-400 border-green-500/30" : "bg-green-600 hover:bg-green-500 text-white"}
+              >
+                {solved ? <Check className="h-4 w-4 mr-1" /> : <CheckCircle className="h-4 w-4 mr-1" />}
+                {solved ? 'Solved ✓' : 'Mark as Solved'}
               </Button>
               <Button variant="outline" onClick={toggleBookmark}>
                 {bookmarked ? 'Bookmarked' : 'Bookmark'}
@@ -141,7 +168,7 @@ export default function ProblemDetailsPage() {
               <CardDescription>Nudge yourself before peeking at a solution.</CardDescription>
             </CardHeader>
             <CardContent>
-              <Accordion type="single" collapsible>
+              <Accordion type="single" collapsible onValueChange={handleHintOpen}>
                 {problem.hints.map((hint, i) => (
                   <AccordionItem key={i} value={`hint-${i}`}>
                     <AccordionTrigger>Hint {i + 1}</AccordionTrigger>
@@ -169,34 +196,38 @@ export default function ProblemDetailsPage() {
         </div>
 
         <div className="space-y-4">
-          <Card className="cursor-pointer transition-shadow hover:shadow-md" onClick={() => openLocked('solution')}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Lock className="h-4 w-4" />
-                Solution
-              </CardTitle>
-              <CardDescription>Premium walkthrough with code and complexity analysis.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="secondary" className="w-full" onClick={() => openLocked('solution')}>
-                Unlock Solution
-              </Button>
-            </CardContent>
+          <Card className="transition-shadow hover:shadow-md">
+            <Link to={`/problems/${problem.id}/solution`} className="block">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Lock className="h-4 w-4" />
+                  Solution
+                </CardTitle>
+                <CardDescription>Premium walkthrough with code and complexity analysis.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button variant="secondary" className="w-full pointer-events-none">
+                  View Solution
+                </Button>
+              </CardContent>
+            </Link>
           </Card>
 
-          <Card className="cursor-pointer transition-shadow hover:shadow-md" onClick={() => openLocked('video')}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Play className="h-4 w-4" />
-                Concept Video
-              </CardTitle>
-              <CardDescription>Visual explanation of the core pattern behind this problem.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="secondary" className="w-full" onClick={() => openLocked('video')}>
-                Unlock Video
-              </Button>
-            </CardContent>
+          <Card className="transition-shadow hover:shadow-md">
+            <a href={problem.conceptVideoUrl || '#'} target="_blank" rel="noreferrer" onClick={handleWatchVideo} className="block">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Play className="h-4 w-4" />
+                  Concept Video
+                </CardTitle>
+                <CardDescription>Visual explanation of the core pattern behind this problem.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button variant="secondary" className="w-full pointer-events-none">
+                  Watch Video
+                </Button>
+              </CardContent>
+            </a>
           </Card>
 
           <Card>
@@ -225,17 +256,11 @@ export default function ProblemDetailsPage() {
               <ProblemCard
                 key={p.id}
                 problem={p}
-                onLocked={(type) => {
-                  setPremiumType(type)
-                  setPremiumOpen(true)
-                }}
               />
             ))}
           </div>
         </section>
       )}
-
-      <PremiumModal open={premiumOpen} onOpenChange={setPremiumOpen} contentType={premiumType} />
     </div>
   )
 }

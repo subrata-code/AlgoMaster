@@ -165,12 +165,20 @@ const userSchema = new mongoose.Schema(
         ref: 'Problem',
       },
     ],
+    streakFreezes: {
+      type: Number,
+      default: 2,
+    },
     solvedProblems: {
       type: [solvedProblemSchema],
       default: [],
     },
     activities: {
       type: [activitySchema],
+      default: [],
+    },
+    unlockedAchievements: {
+      type: [String],
       default: [],
     },
     progress: {

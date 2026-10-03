@@ -1,6 +1,9 @@
 import User from '../models/User.js';
 import Problem from '../models/Problem.js';
 import Content from '../models/Content.js';
+import ProblemEvent from '../models/ProblemEvent.js';
+import * as notificationService from './notificationService.js';
+import * as achievementService from './achievementService.js';
 import { AppError, isValidObjectId } from '../utils/helpers.js';
 import { HTTP_STATUS } from '../constants/index.js';
 
@@ -95,6 +98,14 @@ export const toggleBookmark = async (userId, problemId) => {
   return { bookmarked: !exists };
 };
 
+export const isSolved = async (userId, problemId) => {
+  const user = await User.findById(userId);
+  if (!user) throw new AppError('User not found', HTTP_STATUS.NOT_FOUND);
+  const problem = await resolveProblem(problemId);
+  if (!problem) return false;
+  return user.solvedProblems.some((item) => String(item.problem) === String(problem._id));
+};
+
 export const markSolved = async (userId, problemId) => {
   const user = await User.findById(userId);
   if (!user) throw new AppError('User not found', HTTP_STATUS.NOT_FOUND);
@@ -128,7 +139,7 @@ export const markSolved = async (userId, problemId) => {
     const diffDays = Math.round((today - last) / 86400000);
     if (diffDays === 0) {
       // same day — keep streak
-    } else if (diffDays === 1) {
+    } else if (diffDays <= 2) {
       user.progress.streak += 1;
     } else {
       user.progress.streak = 1;
@@ -153,7 +164,15 @@ export const markSolved = async (userId, problemId) => {
       title: `${user.progress.streak}-day streak!`,
       description: 'You maintained consistency',
     });
+    await notificationService.create(user._id, {
+      type: 'streak',
+      title: `🔥 ${user.progress.streak}-day streak!`,
+      message: 'Keep going!',
+      link: '/dashboard',
+    });
   }
+
+  await achievementService.evaluateAchievements(user);
 
   await user.save();
   return { alreadySolved: false, progress: user.progress };
@@ -236,31 +255,26 @@ export const getAchievements = async (userId) => {
   const user = await User.findById(userId);
   if (!user) throw new AppError('User not found', HTTP_STATUS.NOT_FOUND);
 
-  const easy = user.progress.easy;
-  const medium = user.progress.medium;
-  const hard = user.progress.hard;
-  const solved = user.progress.solved;
-  const streak = user.progress.longestStreak;
+  return achievementService.getAchievementsWithProgress(user);
+};
 
-  const make = (id, title, description, icon, progress, total) => ({
-    id,
-    title,
-    description,
-    icon,
-    progress: Math.min(progress, total),
-    total,
-    unlockedAt: progress >= total ? (user.progress.lastSolvedAt || user.createdAt).toISOString() : undefined,
+export const updateProfile = async (userId, payload) => {
+  const user = await User.findById(userId);
+  if (!user) throw new AppError('User not found', HTTP_STATUS.NOT_FOUND);
+
+  const allowedFields = [
+    'name', 'bio', 'location', 'github', 'linkedin', 'portfolio', 'college',
+    'degree', 'graduationYear', 'targetCompanyType', 'targetRole', 'skills'
+  ];
+
+  allowedFields.forEach(field => {
+    if (payload[field] !== undefined) {
+      user[field] = payload[field];
+    }
   });
 
-  return [
-    make('ach1', 'First Steps', 'Solve your first problem', 'Footprints', solved, 1),
-    make('ach2', 'Array Ace', 'Solve 10 problems', 'Trophy', solved, 10),
-    make('ach3', 'Streak Starter', 'Maintain a 7-day streak', 'Flame', streak, 7),
-    make('ach4', 'Medium Master', 'Solve 25 medium problems', 'Target', medium, 25),
-    make('ach5', 'Hard Mode', 'Solve 10 hard problems', 'Zap', hard, 10),
-    make('ach6', 'Century Club', 'Complete the 100 Days Journey', 'Award', solved, 100),
-    make('ach7', 'Easy Warmup', 'Solve 10 easy problems', 'Footprints', easy, 10),
-  ];
+  await user.save();
+  return user;
 };
 
 export const updateOnboarding = async (userId, payload) => {
@@ -309,4 +323,10 @@ export const subscribeNewsletter = async (email) => {
     await existing.save();
   }
   return { success: true };
+};
+
+export const logEvent = async (userId, problemId, eventType) => {
+  const problem = await resolveProblem(problemId);
+  if (!problem) return; // silently ignore unknown problems
+  await ProblemEvent.create({ user: userId, problem: problem._id, eventType });
 };

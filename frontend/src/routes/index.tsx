@@ -14,6 +14,7 @@ const RoadmapPage = lazy(() => import('@/pages/RoadmapPage'))
 const Journey100Page = lazy(() => import('@/pages/Journey100Page'))
 const ProblemsPage = lazy(() => import('@/pages/ProblemsPage'))
 const ProblemDetailsPage = lazy(() => import('@/pages/ProblemDetailsPage'))
+const SolutionPage = lazy(() => import('@/pages/SolutionPage'))
 const TopicsPage = lazy(() => import('@/pages/TopicsPage'))
 const CompaniesPage = lazy(() => import('@/pages/CompaniesPage'))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
@@ -55,6 +56,7 @@ export function AppRoutes() {
           <Route path={ROUTES.JOURNEY_100} element={<Journey100Page />} />
           <Route path={ROUTES.PROBLEMS} element={<ProblemsPage />} />
           <Route path="/problems/:id" element={<ProblemDetailsPage />} />
+          <Route path="/problems/:id/solution" element={<SolutionPage />} />
           <Route path={ROUTES.TOPICS} element={<TopicsPage />} />
           <Route path={ROUTES.COMPANIES} element={<CompaniesPage />} />
           <Route path="*" element={<NotFoundPage />} />

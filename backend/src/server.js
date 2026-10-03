@@ -2,11 +2,13 @@ import app from './app.js';
 import connectDB from './config/db.js';
 import env from './config/env.js';
 import { configureCloudinary } from './config/cloudinary.js';
+import { scheduleEmailCrons } from './crons/emailScheduler.js';
 
 const startServer = async () => {
   try {
     await connectDB();
     configureCloudinary();
+    scheduleEmailCrons();
 
     app.listen(env.port, () => {
       console.log(`[server] AlgoJourney API running on port ${env.port}`);

@@ -1,5 +1,7 @@
 import * as userService from '../services/userService.js';
 import * as authService from '../services/authService.js';
+import * as insightService from '../services/insightService.js';
+import * as notificationService from '../services/notificationService.js';
 import { asyncHandler, sendSuccess, AppError } from '../utils/helpers.js';
 import { HTTP_STATUS } from '../constants/index.js';
 import { configureCloudinary } from '../config/cloudinary.js';
@@ -65,6 +67,11 @@ export const toggleBookmark = asyncHandler(async (req, res) => {
   sendSuccess(res, { data: result });
 });
 
+export const solveStatus = asyncHandler(async (req, res) => {
+  const solved = await userService.isSolved(req.user._id, req.params.problemId);
+  sendSuccess(res, { data: { solved } });
+});
+
 export const solve = asyncHandler(async (req, res) => {
   const result = await userService.markSolved(req.user._id, req.params.problemId);
   sendSuccess(res, { message: result.alreadySolved ? 'Already solved' : 'Marked as solved', data: result });
@@ -83,4 +90,28 @@ export const suggested = asyncHandler(async (req, res) => {
 export const me = asyncHandler(async (req, res) => {
   const user = await authService.getMe(req.user._id);
   sendSuccess(res, { data: { user } });
+});
+
+export const trackEvent = asyncHandler(async (req, res) => {
+  const { problemId, eventType } = req.body;
+  if (!problemId || !eventType) {
+    throw new AppError('problemId and eventType are required', HTTP_STATUS.BAD_REQUEST);
+  }
+  await userService.logEvent(req.user._id, problemId, eventType);
+  sendSuccess(res, { message: 'Event recorded' });
+});
+
+export const insights = asyncHandler(async (req, res) => {
+  const weaknesses = await insightService.computeWeaknesses(req.user._id);
+  sendSuccess(res, { data: { weaknesses } });
+});
+
+export const getNotifications = asyncHandler(async (req, res) => {
+  const notifications = await notificationService.getRecent(req.user._id);
+  sendSuccess(res, { data: { notifications } });
+});
+
+export const markNotificationsRead = asyncHandler(async (req, res) => {
+  await notificationService.markAllRead(req.user._id);
+  sendSuccess(res, { message: 'Notifications marked as read' });
 });

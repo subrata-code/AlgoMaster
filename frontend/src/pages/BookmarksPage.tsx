@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ProblemCard } from '@/components/ProblemCard'
-import { PremiumModal } from '@/components/PremiumModal'
+
 import { EmptyState, Loader } from '@/components/EmptyState'
 import { PageHeader } from '@/components/PageHeader'
 import { bookmarkService, problemService } from '@/services'
@@ -13,8 +13,7 @@ export default function BookmarksPage() {
   const navigate = useNavigate()
   const [problems, setProblems] = useState<Problem[]>([])
   const [loading, setLoading] = useState(true)
-  const [premiumOpen, setPremiumOpen] = useState(false)
-  const [premiumType, setPremiumType] = useState<'solution' | 'video'>('solution')
+
 
   useEffect(() => {
     async function load() {
@@ -52,15 +51,12 @@ export default function BookmarksPage() {
               problem={problem}
               bookmarked
               onBookmark={handleBookmark}
-              onLocked={(type) => {
-                setPremiumType(type)
-                setPremiumOpen(true)
-              }}
+
             />
           ))}
         </div>
       )}
-      <PremiumModal open={premiumOpen} onOpenChange={setPremiumOpen} contentType={premiumType} />
+
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Bookmark, Flame, Target, Trophy } from 'lucide-react'
 import {
   Bar,
@@ -14,18 +15,25 @@ import { Loader } from '@/components/EmptyState'
 import { PageHeader } from '@/components/PageHeader'
 import { dashboardService } from '@/services'
 import { formatRelativeTime } from '@/lib/utils'
-import type { Activity, DashboardStats } from '@/types'
+import { ROUTES } from '@/constants'
+import type { Activity, DashboardStats, Weakness } from '@/types'
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [activity, setActivity] = useState<Activity[]>([])
+  const [weaknesses, setWeaknesses] = useState<Weakness[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
-      const [s, a] = await Promise.all([dashboardService.getStats(), dashboardService.getRecentActivity()])
+      const [s, a, w] = await Promise.all([
+        dashboardService.getStats(), 
+        dashboardService.getRecentActivity(),
+        dashboardService.getInsights()
+      ])
       setStats(s)
       setActivity(a)
+      setWeaknesses(w)
       setLoading(false)
     }
     void load()
@@ -111,6 +119,31 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {weaknesses.length > 0 && (
+        <Card className="mt-6 border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-transparent">
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold text-amber-500 flex items-center gap-2">
+              <Target className="h-4 w-4" /> Focus Areas
+            </CardTitle>
+            <CardDescription>Topics where you need the most practice</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {weaknesses.map((w) => (
+              <Link key={w.topic} to={`${ROUTES.PROBLEMS}?topic=${encodeURIComponent(w.topic)}`} className="flex items-center gap-3 py-2 hover:bg-white/5 rounded-md px-2 -mx-2 transition-colors">
+                <span className="text-sm text-foreground flex-1 capitalize">{w.topic}</span>
+                <div className="flex-1 h-1.5 rounded-full bg-muted">
+                  <div className="h-full rounded-full bg-amber-500" 
+                       style={{ width: `${(1 - w.score) * 100}%` }} />
+                </div>
+                <span className="text-xs text-muted-foreground w-16 text-right tabular-nums">
+                  {w.solvedCount}/{w.totalCount} done
+                </span>
+              </Link>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="mt-6">
         <CardHeader>
