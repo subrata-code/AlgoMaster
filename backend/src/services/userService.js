@@ -258,24 +258,7 @@ export const getAchievements = async (userId) => {
   return achievementService.getAchievementsWithProgress(user);
 };
 
-export const updateProfile = async (userId, payload) => {
-  const user = await User.findById(userId);
-  if (!user) throw new AppError('User not found', HTTP_STATUS.NOT_FOUND);
 
-  const allowedFields = [
-    'name', 'bio', 'location', 'github', 'linkedin', 'portfolio', 'college',
-    'degree', 'graduationYear', 'targetCompanyType', 'targetRole', 'skills'
-  ];
-
-  allowedFields.forEach(field => {
-    if (payload[field] !== undefined) {
-      user[field] = payload[field];
-    }
-  });
-
-  await user.save();
-  return user;
-};
 
 export const updateOnboarding = async (userId, payload) => {
   const user = await User.findById(userId);
