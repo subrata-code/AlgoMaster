@@ -143,7 +143,7 @@ function SectionProgressBar({ percent }: { percent: number }) {
 
 /* ─── Main ProfilePage ─── */
 export default function ProfilePage() {
-  const { refreshSession } = useAuth()
+  const { setUser: setAuthUser } = useAuth()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [editingSection, setEditingSection] = useState<string | null>(null)
@@ -200,7 +200,7 @@ export default function ProfilePage() {
       }
       const updated = await userService.updateProfile(payload as Partial<User>)
       setUser(updated)
-      await refreshSession()
+      setAuthUser(updated)
       setEditingSection(null)
       setFormData({})
       toast({ title: 'Profile updated', description: `${section.title} saved successfully.` })

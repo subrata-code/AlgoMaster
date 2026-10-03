@@ -1,6 +1,6 @@
 import { apiRequest } from '@/lib/api'
 import type { Achievement, Activity, Bookmark, DashboardStats, User } from '@/types'
-import { authService } from './authService'
+import { authService, normalizeUser } from './authService'
 
 export const userService = {
   async getCurrentUser(): Promise<User> {
@@ -22,7 +22,7 @@ export const userService = {
       method: 'PUT',
       body: JSON.stringify(data),
     })
-    return response.data!.user
+    return normalizeUser(response.data!.user as never)
   },
 
   async updateOnboarding(data: { completed: boolean; difficultyPreference: string; tourCompleted: boolean }): Promise<User> {

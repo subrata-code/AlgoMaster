@@ -15,6 +15,7 @@ interface AuthContextValue {
   resetPassword: (token: string, password: string) => Promise<{ user: User; token: string }>
   logout: () => Promise<void>
   refreshSession: () => Promise<void>
+  setUser: (user: User | null) => void
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
@@ -28,7 +29,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const currentUser = await authService.getCurrentUser()
       setUser(currentUser)
     } catch {
-      setUser(null)
+      // Only clear user if there's no existing session.
+      // If the API call fails transiently (e.g. network blip),
+      // we keep the current user to avoid logging out mid-session.
     }
   }, [])
 
@@ -113,6 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       resetPassword,
       logout,
       refreshSession,
+      setUser,
     }),
     [loading, login, logout, refreshSession, resetPassword, signup, googleLogin, verifyEmail, resendVerification, forgotPassword, user],
   )
