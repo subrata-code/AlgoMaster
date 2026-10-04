@@ -48,7 +48,7 @@ export const signup = async ({ name, email, password }) => {
   });
 
   // Do not sign token here. User must verify email.
-  return { user: { email: user.email }, requiresVerification: true };
+  return { user, requiresVerification: true };
 };
 
 export const verifyEmail = async ({ email, otp }) => {

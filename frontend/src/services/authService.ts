@@ -91,7 +91,13 @@ export const authService = {
     })
 
     if (response.data!.requiresVerification) {
-      return { requiresVerification: true, user: normalizeUser(response.data!.user) }
+      // User object may be partial at this stage (not yet verified).
+      // We only need the email for the OTP screen, so we skip full normalization.
+      const rawUser = response.data!.user
+      const partialUser: User | undefined = rawUser
+        ? normalizeUser({ name: rawUser.name ?? data.name, email: rawUser.email ?? data.email, ...rawUser })
+        : undefined
+      return { requiresVerification: true, user: partialUser }
     }
 
     return {
