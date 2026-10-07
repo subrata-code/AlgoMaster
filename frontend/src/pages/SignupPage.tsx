@@ -39,15 +39,9 @@ export default function SignupPage() {
 
   const onSubmit = handleSubmit(async (values) => {
     try {
-      const response = await signup(values)
-      if (response.requiresVerification) {
-        setRegisteredEmail(values.email)
-        setNeedsOtp(true)
-        toast({ title: 'Verification email sent', description: 'Please check your inbox.' })
-      } else {
-        toast({ title: 'Account created', description: 'Your account is ready.' })
-        void navigate(ROUTES.DASHBOARD)
-      }
+      await signup(values)
+      toast({ title: 'Account created! 🎉', description: 'Welcome to AlgoMaster!' })
+      void navigate(ROUTES.DASHBOARD)
     } catch (error) {
       toast({ title: 'Signup failed', description: error instanceof Error ? error.message : 'Unable to create account.' })
     }

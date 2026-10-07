@@ -24,14 +24,6 @@ const clearAuthCookie = (res) => {
 
 export const signup = asyncHandler(async (req, res) => {
   const result = await authService.signup(req.body);
-  
-  if (result.requiresVerification) {
-    return sendSuccess(res, {
-      statusCode: HTTP_STATUS.CREATED,
-      message: 'Account created. Please verify your email.',
-      data: result,
-    });
-  }
 
   setAuthCookie(res, result.token);
   sendSuccess(res, {
@@ -68,14 +60,6 @@ export const googleLogin = asyncHandler(async (req, res) => {
 
 export const login = asyncHandler(async (req, res) => {
   const result = await authService.login(req.body);
-
-  if (result.requiresVerification) {
-    return sendSuccess(res, {
-      statusCode: HTTP_STATUS.OK,
-      message: 'Please verify your email address.',
-      data: result,
-    });
-  }
 
   setAuthCookie(res, result.token);
 

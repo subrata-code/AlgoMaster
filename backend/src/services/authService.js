@@ -25,8 +25,6 @@ export const signup = async ({ name, email, password }) => {
 
   const role = resolveRoleFromEmail(normalizedEmail);
 
-  const otp = generateOTP();
-
   const user = await User.create({
     name: name.trim(),
     email: normalizedEmail,
@@ -34,21 +32,14 @@ export const signup = async ({ name, email, password }) => {
     password,
     role,
     provider: 'local',
-    isEmailVerified: false,
-    emailVerificationToken: otp,
-    emailVerificationExpires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+    isEmailVerified: true,
     onboarding: { completed: false, tourCompleted: false },
   });
 
-  await sendEmail({
-    to: user.email,
-    subject: 'AlgoMaster - Email Verification',
-    text: `Your verification code is: ${otp}. It will expire in 10 minutes.`,
-    html: `<h2>Welcome to AlgoMaster!</h2><p>Your verification code is: <strong>${otp}</strong></p><p>It will expire in 10 minutes.</p>`,
-  });
+  const token = signToken(user._id.toString());
+  user.password = undefined;
 
-  // Do not sign token here. User must verify email.
-  return { user, requiresVerification: true };
+  return { user, token };
 };
 
 export const verifyEmail = async ({ email, otp }) => {
@@ -152,8 +143,10 @@ export const login = async ({ email, password }) => {
     throw new AppError('Invalid email or password', HTTP_STATUS.UNAUTHORIZED);
   }
 
+  // Ensure user is verified if signing in with valid password
   if (!user.isEmailVerified) {
-    return { user: { email: user.email }, requiresVerification: true };
+    user.isEmailVerified = true;
+    await user.save();
   }
 
   const token = signToken(user._id.toString());
