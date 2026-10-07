@@ -4,6 +4,7 @@ import problemRoutes from './problemRoutes.js';
 import userRoutes from './userRoutes.js';
 import adminRoutes from './adminRoutes.js';
 import contentRoutes from './contentRoutes.js';
+import resumeRoutes from './resumeRoutes.js';
 
 const router = Router();
 
@@ -12,6 +13,7 @@ router.use('/problems', problemRoutes);
 router.use('/users', userRoutes);
 router.use('/admin', adminRoutes);
 router.use('/content', contentRoutes);
+router.use('/resume', resumeRoutes);
 
 router.get('/health', (_req, res) => {
   res.status(200).json({

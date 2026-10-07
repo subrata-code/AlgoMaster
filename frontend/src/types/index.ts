@@ -199,3 +199,74 @@ export interface AdminStats {
   totalUsers: number
   viewsThisWeek: number
 }
+
+export interface EducationItem {
+  college: string
+  degree: string
+  graduationYear: string
+  cgpa?: string
+}
+
+export interface ExperienceItem {
+  company: string
+  role: string
+  location?: string
+  startDate: string
+  endDate: string
+  isCurrent?: boolean
+  bullets: string[]
+}
+
+export interface ProjectItem {
+  name: string
+  techStack: string
+  description: string
+  link?: string
+  bullets?: string[]
+}
+
+export interface CertificationItem {
+  name: string
+  issuer: string
+  year: string
+}
+
+export interface ATSBreakdown {
+  keywordMatch: number
+  skillsCoverage: number
+  sectionCompleteness: number
+  actionVerbs: number
+  quantification: number
+  formattingSafety: number
+}
+
+export interface ResumeData {
+  id?: string
+  targetRole: string
+  targetCompany?: string
+  jobDescription?: string
+  experienceLevel: string
+
+  fullName: string
+  email: string
+  phone?: string
+  location?: string
+  github?: string
+  linkedin?: string
+  portfolio?: string
+
+  summary: string
+  skills: string[]
+  education: EducationItem[]
+  experience: ExperienceItem[]
+  projects: ProjectItem[]
+  certifications?: CertificationItem[]
+  achievements?: string[]
+
+  atsScore?: number
+  atsBreakdown?: ATSBreakdown
+  keywordsMatched?: string[]
+  keywordsMissed?: string[]
+  suggestions?: string[]
+  createdAt?: string
+}

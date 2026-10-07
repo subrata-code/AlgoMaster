@@ -1,0 +1,32 @@
+{
+  "SDE / Software Engineer": [
+    "Data Structures", "Algorithms", "Object-Oriented Programming", "REST APIs", "System Design",
+    "Git", "Microservices", "Unit Testing", "Debugging", "CI/CD", "Docker", "Database Design",
+    "SQL", "Problem Solving", "Clean Code", "Design Patterns", "Agile", "Scrum"
+  ],
+  "Frontend Developer": [
+    "JavaScript", "TypeScript", "React", "Next.js", "HTML5", "CSS3", "Tailwind CSS",
+    "Redux", "Zustand", "State Management", "Responsive Design", "Web Performance",
+    "Accessibility", "a11y", "Webpack", "Vite", "RESTful APIs", "UI/UX", "Cross-Browser Compatibility"
+  ],
+  "Backend Developer": [
+    "Node.js", "Express.js", "Python", "Django", "FastAPI", "Java", "Spring Boot",
+    "RESTful APIs", "GraphQL", "PostgreSQL", "MongoDB", "Redis", "Kafka",
+    "Microservices", "Docker", "AWS", "Authentication", "JWT", "OAuth", "Caching", "ORM"
+  ],
+  "Full-stack Developer": [
+    "React", "Node.js", "TypeScript", "Express.js", "MongoDB", "PostgreSQL",
+    "Next.js", "REST APIs", "GraphQL", "Docker", "Git", "State Management",
+    "Database Architecture", "Cloud Deployment", "AWS", "Tailwind CSS", "CI/CD"
+  ],
+  "Data Scientist / ML Engineer": [
+    "Python", "Machine Learning", "Deep Learning", "TensorFlow", "PyTorch",
+    "Scikit-Learn", "Pandas", "NumPy", "SQL", "Data Analysis", "Feature Engineering",
+    "Model Evaluation", "Computer Vision", "NLP", "BigQuery", "Data Visualization", "Matplotlib"
+  ],
+  "DevOps Engineer": [
+    "Docker", "Kubernetes", "Linux", "CI/CD", "GitHub Actions", "Terraform",
+    "AWS", "GCP", "Bash Scripting", "Prometheus", "Grafana", "Nginx",
+    "Networking", "Infrastructure as Code", "Security", "Ansible", "CloudWatch"
+  ]
+}

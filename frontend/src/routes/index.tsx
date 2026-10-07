@@ -20,6 +20,7 @@ const CompaniesPage = lazy(() => import('@/pages/CompaniesPage'))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
 const BookmarksPage = lazy(() => import('@/pages/BookmarksPage'))
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
+const ResumeBuilderPage = lazy(() => import('@/pages/ResumeBuilderPage'))
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const SignupPage = lazy(() => import('@/pages/SignupPage'))
@@ -79,6 +80,7 @@ export function AppRoutes() {
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
           <Route path={ROUTES.BOOKMARKS} element={<BookmarksPage />} />
           <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
+          <Route path={ROUTES.RESUME_BUILDER} element={<ResumeBuilderPage />} />
           <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
         </Route>
 

@@ -15,6 +15,7 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   BOOKMARKS: '/bookmarks',
   PROFILE: '/profile',
+  RESUME_BUILDER: '/resume-builder',
   SETTINGS: '/settings',
   ONBOARDING: '/onboarding',
   LOGIN: '/login',
@@ -44,6 +45,7 @@ export const NAV_LINKS = [
 export const DASHBOARD_NAV = [
   { label: 'Dashboard', href: ROUTES.DASHBOARD, icon: 'LayoutDashboard' },
   { label: 'Problems', href: ROUTES.PROBLEMS, icon: 'Code2' },
+  { label: 'Resume Builder', href: ROUTES.RESUME_BUILDER, icon: 'FileText' },
   { label: 'Bookmarks', href: ROUTES.BOOKMARKS, icon: 'Bookmark' },
   { label: 'Profile', href: ROUTES.PROFILE, icon: 'User' },
   { label: 'Settings', href: ROUTES.SETTINGS, icon: 'Settings' },

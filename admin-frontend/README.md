@@ -47,3 +47,5 @@ npm run build
 2. Select the `admin-frontend` folder as the Root Directory.
 3. Add the `VITE_API_URL` pointing to your live backend.
 4. Deploy! Ensure you update the backend's `ADMIN_URL` to point to this new Vercel domain to prevent CORS errors.
+
+5. https://algo-master-mii2.vercel.app/

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Bookmark, Flame, Target, Trophy, ArrowRight, Brain, Database, Code2 } from 'lucide-react'
+import { Bookmark, Flame, Target, Trophy, ArrowRight, Brain, Database, Code2, FileText, Sparkles } from 'lucide-react'
 import {
   Bar,
   BarChart,
@@ -82,6 +82,37 @@ export default function DashboardPage() {
           <h2 className="text-lg font-semibold border-b border-border pb-2">Continue Preparation</h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* ATS Resume Builder Banner Card */}
+            <Link
+              to={ROUTES.RESUME_BUILDER}
+              className="group relative flex flex-col justify-between p-5 rounded-xl bg-gradient-to-br from-indigo-950/40 via-purple-950/20 to-card border border-indigo-500/30 hover:border-indigo-500/60 transition-all shadow-md sm:col-span-2"
+            >
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3.5">
+                  <div className="p-2.5 bg-indigo-500/15 rounded-xl text-indigo-400 border border-indigo-500/25">
+                    <FileText className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-bold text-foreground text-base group-hover:text-indigo-400 transition-colors">
+                        ATS Resume Builder
+                      </h3>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full">
+                        <Sparkles className="h-2.5 w-2.5" /> 100% Python Engine
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground max-w-xl">
+                      Auto-extract profile details, tailor to specific job descriptions, verify ATS score, and export professional single-column PDFs.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-semibold text-indigo-400 shrink-0">
+                  <span>Build Resume</span>
+                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </Link>
+
             {/* 100 Day Challenge */}
             <Link to={ROUTES.JOURNEY_100} className="group relative flex flex-col justify-between p-5 rounded-xl bg-card border border-border hover:border-foreground/20 transition-all shadow-sm">
               <div>

@@ -12,7 +12,8 @@ import {
   Database,
   Calculator,
   MessageSquare,
-  BookOpen
+  BookOpen,
+  FileText
 } from 'lucide-react'
 import { ROUTES, APP_NAME } from '@/constants'
 import { cn } from '@/lib/utils'
@@ -44,6 +45,7 @@ const APP_NAV: NavItem[] = [
     ]
   },
   { label: 'Curriculum', href: ROUTES.ROADMAP, icon: BookOpen },
+  { label: 'Resume Builder', href: ROUTES.RESUME_BUILDER, icon: FileText },
   { label: 'Bookmarks', href: ROUTES.BOOKMARKS, icon: Bookmark },
   { label: 'Profile', href: ROUTES.PROFILE, icon: User },
   { label: 'Settings', href: ROUTES.SETTINGS, icon: Settings },
